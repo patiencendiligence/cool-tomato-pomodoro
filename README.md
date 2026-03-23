@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# 🍅 멋쟁이 토마토 (Cool Tomato - Pomodoro Timer)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+목표달성을 위해 집중하는 멋쟁이 토마토! 포모도로 타이머와 업무 관리 기능을 합친 앱입니다.
 
-Currently, two official plugins are available:
+## ✨ 주요 기능
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### ⏱️ 포모도로 타이머
+- 25분 집중 → 5분 짧은 휴식 → 4회 후 20분 긴 휴식
+- 시각적 원형 프로그레스바
+- 타이머 시작/일시정지/건너뛰기
+- 집중/휴식 시간 커스터마이징
+- 자동 시작 옵션
 
-## React Compiler
+### ✅ 업무 관리
+- 업무 추가/삭제/완료
+- 우선순위 설정 (높음/보통/낮음)
+- 예상 포모도로 수 설정
+- 완료된 포모도로 자동 카운트
+- 진행중/완료 필터
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📊 통계 & 리포트
+- 오늘의 포모도로 수
+- 총 집중 시간
+- 완료한 업무 수
+- 주간 통계 차트
 
-## Expanding the ESLint configuration
+### ⚙️ 설정
+- 타이머 시간 커스터마이징 (집중/짧은휴식/긴휴식)
+- 알림 설정
+- 소리 설정
+- 3가지 테마 (라이트/다크/토마토)
+- 다국어 지원 (한국어/영어)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🌍 다국어 지원
+- 한국 접속자: 자동으로 한글 표시
+- 그 외 지역: 자동으로 영어 표시
+- 설정에서 언어 변경 가능
+- localStorage에 설정 저장
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 포모도로 기법 사용법
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. **업무 선택**: 집중할 업무를 선택하세요
+2. **25분 집중**: 타이머를 시작하고 방해받지 않고 집중하세요
+3. **5분 휴식**: 타이머가 끝나면 짧은 휴식을 취하세요
+4. **반복**: 2-3단계를 반복하세요
+5. **긴 휴식**: 4번의 포모도로 후 20분 긴 휴식을 취하세요
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 💻 개발 환경 설정
+
+```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# 프로덕션 빌드
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔧 Chrome 확장프로그램 설치
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. `npm run build` 실행
+2. Chrome에서 `chrome://extensions` 접속
+3. "개발자 모드" 활성화
+4. "압축해제된 확장 프로그램을 로드합니다" 클릭
+5. `dist` 폴더 선택
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📁 프로젝트 구조
+
 ```
+src/
+├── components/     # UI 컴포넌트
+│   ├── Timer.tsx       # 포모도로 타이머
+│   ├── TaskList.tsx    # 업무 목록
+│   ├── Stats.tsx       # 통계
+│   ├── Settings.tsx    # 설정
+│   └── Navigation.tsx  # 하단 네비게이션
+├── hooks/          # 커스텀 훅
+│   ├── useTimer.ts     # 타이머 로직
+│   ├── useTasks.ts     # 업무 관리
+│   ├── useStats.ts     # 통계 관리
+│   ├── useTheme.ts     # 테마 관리
+│   └── useLanguage.ts  # 다국어 지원
+├── types/          # TypeScript 타입
+└── App.tsx         # 메인 앱
+```
+
+## 🛠️ 기술 스택
+
+- React 19
+- TypeScript
+- Vite
+- Chrome Extension Manifest V3
+
+## 📄 라이선스
+
+MIT License
