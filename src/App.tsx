@@ -64,11 +64,13 @@ function App() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: colors.background,
+      background: activeTab === 'timer' 
+        ? 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 50%, #e8e8f0 100%)'
+        : colors.background,
       color: colors.text,
       display: 'flex',
       flexDirection: 'column',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
       maxWidth: '420px',
       margin: '0 auto',
       position: 'relative',
