@@ -68,6 +68,16 @@ npm run build
 4. Click "Load unpacked"
 5. Select the `dist` folder
 
+## 🔒 Privacy Policy
+
+[View Privacy Policy](https://patiencendiligence.github.io/cool-tomato-pomodoro/PRIVACY_POLICY.html)
+
+## ☕ Support
+
+If you enjoy this app, consider supporting me on [Ko-fi](https://ko-fi.com/patiencendiligence)! ☕
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/patiencendiligence)
+
 ---
 
 # 🍅 멋쟁이 토마토 (Pomodoro Timer)
@@ -139,6 +149,16 @@ npm run build
 3. "개발자 모드" 활성화
 4. "압축해제된 확장 프로그램을 로드합니다" 클릭
 5. `dist` 폴더 선택
+
+## 🔒 개인정보처리방침
+
+[개인정보처리방침 보기](https://patiencendiligence.github.io/cool-tomato-pomodoro/PRIVACY_POLICY.html)
+
+## ☕ 후원하기
+
+이 앱이 마음에 드셨다면, [Ko-fi](https://ko-fi.com/patiencendiligence)에서 저를 후원해 주세요! ☕
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/patiencendiligence)
 
 ---
 
