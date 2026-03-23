@@ -295,9 +295,43 @@
             <td><code>alarms</code></td>
             <td>백그라운드에서 타이머 관리</td>
           </tr>
+          <tr>
+            <td><code>호스트 권한 (&lt;all_urls&gt;)</code></td>
+            <td>모든 웹페이지에서 플로팅 위젯 표시</td>
+          </tr>
         </table>
         
-        <h2>7. Storage 권한 사용 근거</h2>
+        <h2>7. 호스트 권한 사용 근거</h2>
+        <div class="highlight">
+          <p><strong>왜 호스트 권한이 필요한가요?</strong></p>
+          <p>본 확장 프로그램은 <strong>플로팅 위젯</strong> 형태로 동작하며, 사용자가 어떤 웹사이트를 방문하든 타이머를 사용할 수 있어야 합니다.</p>
+        </div>
+        
+        <h3>호스트 권한의 실제 사용 목적</h3>
+        <table>
+          <tr>
+            <th>기능</th>
+            <th>설명</th>
+          </tr>
+          <tr>
+            <td>플로팅 위젯 표시</td>
+            <td>모든 웹페이지 위에 포모도로 타이머 위젯을 오버레이로 표시</td>
+          </tr>
+          <tr>
+            <td>어디서든 사용 가능</td>
+            <td>사용자가 작업 중인 모든 사이트에서 타이머 접근 가능</td>
+          </tr>
+        </table>
+        
+        <h3>호스트 권한이 하지 않는 것</h3>
+        <ul class="cross-list">
+          <li>웹페이지의 <strong>콘텐츠를 읽지 않습니다</strong></li>
+          <li>사용자의 <strong>브라우징 기록을 추적하지 않습니다</strong></li>
+          <li>페이지의 <strong>데이터를 수집하거나 전송하지 않습니다</strong></li>
+          <li>웹페이지를 <strong>수정하거나 변경하지 않습니다</strong> (위젯 UI 오버레이 제외)</li>
+        </ul>
+        
+        <h2>8. Storage 권한 사용 근거</h2>
         <div class="highlight">
           <p><strong>왜 Storage 권한이 필요한가요?</strong></p>
           <p>본 확장 프로그램은 포모도로 타이머 기능을 제공하기 위해 <code>chrome.storage.local</code> API를 사용합니다. 이 권한은 핵심 기능을 위해 반드시 필요합니다.</p>
@@ -339,7 +373,7 @@
           <li>확장 프로그램 삭제 시 <strong>모든 데이터가 완전히 삭제</strong>됩니다</li>
         </ul>
         
-        <h2>8. 사용자 권리</h2>
+        <h2>9. 사용자 권리</h2>
         <p>사용자는 언제든지:</p>
         <ul>
           <li>브라우저 설정에서 확장 프로그램 데이터를 삭제할 수 있습니다</li>
@@ -347,14 +381,14 @@
           <li>앱 내 설정에서 개별 데이터를 관리할 수 있습니다</li>
         </ul>
         
-        <h2>9. 아동 개인정보 보호</h2>
+        <h2>10. 아동 개인정보 보호</h2>
         <p>본 확장 프로그램은 13세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다.</p>
         
-        <h2>10. 문의</h2>
+        <h2>11. 문의</h2>
         <p>개인정보처리방침에 관한 문의사항이 있으시면 GitHub Issues를 통해 문의해 주세요:</p>
         <p><a href="https://github.com/patiencendiligence/cool-tomato-pomodoro" target="_blank">https://github.com/patiencendiligence/cool-tomato-pomodoro</a></p>
         
-        <h2>11. 동의</h2>
+        <h2>12. 동의</h2>
         <p>본 확장 프로그램을 설치하고 사용함으로써, 사용자는 본 개인정보처리방침에 동의하는 것으로 간주됩니다.</p>
       </div>
       
@@ -422,9 +456,43 @@
             <td><code>alarms</code></td>
             <td>Manage timer in background</td>
           </tr>
+          <tr>
+            <td><code>Host Permissions (&lt;all_urls&gt;)</code></td>
+            <td>Display floating widget on all webpages</td>
+          </tr>
         </table>
         
-        <h2>7. Justification for Storage Permission</h2>
+        <h2>7. Justification for Host Permissions</h2>
+        <div class="highlight">
+          <p><strong>Why are Host Permissions Required?</strong></p>
+          <p>This extension operates as a <strong>floating widget</strong> that needs to be accessible on any website the user visits.</p>
+        </div>
+        
+        <h3>Actual Use of Host Permissions</h3>
+        <table>
+          <tr>
+            <th>Feature</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>Floating Widget Display</td>
+            <td>Show Pomodoro timer widget as an overlay on all webpages</td>
+          </tr>
+          <tr>
+            <td>Universal Access</td>
+            <td>Timer accessible on any site where the user is working</td>
+          </tr>
+        </table>
+        
+        <h3>What Host Permissions Do NOT Do</h3>
+        <ul class="cross-list">
+          <li>Does <strong>NOT read</strong> webpage content</li>
+          <li>Does <strong>NOT track</strong> browsing history</li>
+          <li>Does <strong>NOT collect or transmit</strong> page data</li>
+          <li>Does <strong>NOT modify</strong> webpages (except for widget UI overlay)</li>
+        </ul>
+        
+        <h2>8. Justification for Storage Permission</h2>
         <div class="highlight">
           <p><strong>Why is the Storage Permission Required?</strong></p>
           <p>This extension uses the <code>chrome.storage.local</code> API to provide Pomodoro timer functionality. This permission is essential for core features.</p>
@@ -466,7 +534,7 @@
           <li><strong>Completely deleted</strong> when the extension is uninstalled</li>
         </ul>
         
-        <h2>8. User Rights</h2>
+        <h2>9. User Rights</h2>
         <p>Users can at any time:</p>
         <ul>
           <li>Delete extension data through browser settings</li>
@@ -474,14 +542,14 @@
           <li>Manage individual data within app settings</li>
         </ul>
         
-        <h2>9. Children's Privacy</h2>
+        <h2>10. Children's Privacy</h2>
         <p>This extension does not knowingly collect personal information from children under 13 years of age.</p>
         
-        <h2>10. Contact</h2>
+        <h2>11. Contact</h2>
         <p>For questions about this Privacy Policy, please submit via GitHub Issues:</p>
         <p><a href="https://github.com/patiencendiligence/cool-tomato-pomodoro" target="_blank">https://github.com/patiencendiligence/cool-tomato-pomodoro</a></p>
         
-        <h2>11. Consent</h2>
+        <h2>12. Consent</h2>
         <p>By installing and using this extension, you agree to this Privacy Policy.</p>
       </div>
     </div>
