@@ -58,6 +58,17 @@ export const Timer: React.FC<TimerProps> = ({
 
   const isFullTime = timeLeft === (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60);
 
+  // Get tomato image based on timer progress
+  const getTomatoImage = () => {
+    if (!isRunning) return '/tomato-mascot.png';
+    const totalTime = mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60;
+    const progress = 1 - (timeLeft / totalTime);
+    if (progress < 0.25) return '/tomato-stage1.png';
+    if (progress < 0.5) return '/tomato-stage2.png';
+    if (progress < 0.75) return '/tomato-stage3.png';
+    return '/tomato-mascot.png';
+  };
+
   // Liquid Glass Style - color based on mode
   const getModeColor = () => {
     if (mode === 'work') return { r: 231, g: 76, b: 60 };
@@ -312,6 +323,10 @@ export const Timer: React.FC<TimerProps> = ({
     { id: 'settings', icon: '⚙️' },
   ];
 
+  // Timer card height for icon sizing
+  const TIMER_CARD_HEIGHT = 100;
+  const NAV_ICON_SIZE = Math.floor(TIMER_CARD_HEIGHT / 4);
+
   // Compact view - True Liquid Glass Style
   return (
     <div 
@@ -320,11 +335,10 @@ export const Timer: React.FC<TimerProps> = ({
         flexDirection: 'row',
         alignItems: 'center', 
         justifyContent: 'center',
-        padding: '40px 20px',
+        padding: '16px',
         position: 'relative',
         background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
-        minHeight: '100%',
-        gap: '20px',
+        gap: '12px',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -332,21 +346,15 @@ export const Timer: React.FC<TimerProps> = ({
       {/* Main Content Area */}
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        gap: '8px',
       }}>
         {/* Paused/Stopped State - Compact Tomato with Play */}
         {!isRunning ? (
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: '16px',
-          }}>
+          <>
             {/* Tomato with Play Button overlay */}
             <div style={{ position: 'relative' }}>
-              {/* Bouncing Tomato */}
               <div 
                 style={{
                   animation: 'bounce 1s ease-in-out infinite',
@@ -355,33 +363,31 @@ export const Timer: React.FC<TimerProps> = ({
                 onClick={isFullTime ? onStart : onResume}
               >
                 <img 
-                  src="/tomato-mascot.png" 
+                  src={getTomatoImage()}
                   alt="Cool Tomato"
                   style={{
-                    width: '120px',
-                    height: '120px',
+                    width: '80px',
+                    height: '80px',
                     objectFit: 'contain',
-                    filter: 'drop-shadow(0 8px 16px rgba(231, 76, 60, 0.2))',
+                    filter: 'drop-shadow(0 4px 8px rgba(231, 76, 60, 0.15))',
                   }}
                 />
               </div>
-
-              {/* Small Play Button - Bottom Right */}
               <button
                 onClick={isFullTime ? onStart : onResume}
                 style={{
                   position: 'absolute',
-                  bottom: '-4px',
-                  right: '-4px',
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '18px',
-                  fontSize: '14px',
+                  bottom: '-2px',
+                  right: '-2px',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '14px',
+                  fontSize: '11px',
                   background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
                   color: '#fff',
                   border: '2px solid #fff',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -391,33 +397,32 @@ export const Timer: React.FC<TimerProps> = ({
               </button>
             </div>
 
-            {/* Mode Pills - Vertical */}
+            {/* Mode Pills - Vertical Compact */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '6px',
-              padding: '6px',
-              borderRadius: '24px',
+              gap: '4px',
+              padding: '4px',
+              borderRadius: '16px',
               background: 'rgba(255,255,255,0.7)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255,255,255,0.8)',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
             }}>
               {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => onModeChange(m)}
                   style={{
-                    width: '36px',
-                    height: '36px',
+                    width: '24px',
+                    height: '24px',
                     border: 'none',
-                    borderRadius: '18px',
+                    borderRadius: '12px',
                     background: mode === m 
                       ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
                       : 'transparent',
-                    boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                    boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
                     cursor: 'pointer',
-                    fontSize: '14px',
+                    fontSize: '12px',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
@@ -429,66 +434,68 @@ export const Timer: React.FC<TimerProps> = ({
                 </button>
               ))}
             </div>
-          </div>
+          </>
         ) : (
-          /* Running State - Only Timer */
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}>
-            {/* Liquid Glass Timer Container */}
+          /* Running State - Timer with small tomato indicator */
+          <>
+            {/* Small Tomato Progress Indicator */}
+            <img 
+              src={getTomatoImage()}
+              alt="Progress"
+              style={{
+                width: '40px',
+                height: '40px',
+                objectFit: 'contain',
+              }}
+            />
+
+            {/* Compact Timer Container */}
             <div
               style={{
                 ...liquidGlassStyle,
-                padding: '28px 24px',
+                padding: '12px 16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: isHovered ? 'scale(1.02)' : 'scale(1)',
                 position: 'relative',
-                overflow: 'visible',
+                height: `${TIMER_CARD_HEIGHT}px`,
+                borderRadius: '24px',
               }}
             >
-              {/* Status Badge - Liquid Glass Pill */}
+              {/* Status Badge */}
               <div style={{
                 position: 'absolute',
-                top: '-14px',
-                right: '16px',
-                padding: '8px 16px',
-                borderRadius: '20px',
+                top: '-10px',
+                right: '12px',
+                padding: '4px 10px',
+                borderRadius: '12px',
                 background: mode === 'work'
                   ? 'linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%)'
-                  : mode === 'shortBreak'
-                  ? 'linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(39, 174, 96, 0.1) 100%)'
-                  : 'linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%)',
+                  : 'linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(39, 174, 96, 0.1) 100%)',
                 backdropFilter: 'blur(20px)',
                 border: `1px solid ${mode === 'work' ? 'rgba(231, 76, 60, 0.3)' : 'rgba(39, 174, 96, 0.3)'}`,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                gap: '4px',
               }}>
-                <span style={{ fontSize: '13px' }}>{getStatusEmoji()}</span>
+                <span style={{ fontSize: '10px' }}>{getStatusEmoji()}</span>
                 <span style={{ 
                   color: mode === 'work' ? '#c0392b' : '#1e8449', 
-                  fontSize: '12px', 
+                  fontSize: '10px', 
                   fontWeight: '600',
-                  letterSpacing: '0.3px',
                 }}>
                   {getStatusLabel()}
                 </span>
               </div>
 
-              {/* Progress bar - Liquid style */}
+              {/* Progress bar */}
               <div style={{
                 position: 'absolute',
-                bottom: '8px',
-                left: '16px',
-                right: '16px',
-                height: '4px',
+                bottom: '6px',
+                left: '12px',
+                right: '12px',
+                height: '3px',
                 borderRadius: '2px',
                 background: 'rgba(0,0,0,0.05)',
                 overflow: 'hidden',
@@ -502,95 +509,69 @@ export const Timer: React.FC<TimerProps> = ({
                 }} />
               </div>
 
-              {/* Time Display */}
+              {/* Time Display - Compact */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
+                gap: '6px',
               }}>
-                <div style={{ textAlign: 'center' }}>
-                  <span style={{
-                    fontSize: '52px',
-                    fontWeight: '300',
-                    color: '#1a1a1a',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                    letterSpacing: '-2px',
-                    lineHeight: 1,
-                  }}>
-                    {String(minutes).padStart(2, '0')}
-                  </span>
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(0,0,0,0.4)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    marginTop: '6px',
-                  }}>
-                    {t.minutes}
-                  </div>
-                </div>
-
-                {/* Divider - Liquid Glass */}
-                <div style={{
-                  width: '2px',
-                  height: '40px',
-                  background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
-                  borderRadius: '1px',
-                }} />
-
-                <div style={{ textAlign: 'center' }}>
-                  <span style={{
-                    fontSize: '52px',
-                    fontWeight: '300',
-                    color: '#1a1a1a',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                    letterSpacing: '-2px',
-                    lineHeight: 1,
-                  }}>
-                    {String(seconds).padStart(2, '0')}
-                  </span>
-                  <div style={{
-                    fontSize: '11px',
-                    color: 'rgba(0,0,0,0.4)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    marginTop: '6px',
-                  }}>
-                    {t.seconds}
-                  </div>
-                </div>
+                <span style={{
+                  fontSize: '36px',
+                  fontWeight: '300',
+                  color: '#1a1a1a',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                  letterSpacing: '-1px',
+                  lineHeight: 1,
+                }}>
+                  {String(minutes).padStart(2, '0')}
+                </span>
+                <span style={{
+                  fontSize: '28px',
+                  fontWeight: '300',
+                  color: 'rgba(0,0,0,0.3)',
+                }}>:</span>
+                <span style={{
+                  fontSize: '36px',
+                  fontWeight: '300',
+                  color: '#1a1a1a',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                  letterSpacing: '-1px',
+                  lineHeight: 1,
+                }}>
+                  {String(seconds).padStart(2, '0')}
+                </span>
               </div>
 
-              {/* Hover Controls - Liquid Glass Overlay */}
+              {/* Hover Controls */}
               <div style={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'rgba(255, 255, 255, 0.85)',
+                background: 'rgba(255, 255, 255, 0.9)',
                 backdropFilter: 'blur(20px)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '16px',
+                gap: '8px',
                 opacity: isHovered ? 1 : 0,
                 transition: 'opacity 0.3s ease',
                 pointerEvents: isHovered ? 'auto' : 'none',
-                borderRadius: '32px',
+                borderRadius: '24px',
               }}>
                 <button
                   onClick={onPause}
                   style={{
-                    width: '52px',
-                    height: '52px',
-                    borderRadius: '26px',
-                    fontSize: '18px',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '20px',
+                    fontSize: '14px',
                     background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
                     color: '#fff',
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -601,15 +582,14 @@ export const Timer: React.FC<TimerProps> = ({
                 <button
                   onClick={onSkip}
                   style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '22px',
-                    fontSize: '14px',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '16px',
+                    fontSize: '12px',
                     background: 'rgba(255,255,255,0.9)',
                     color: '#333',
                     border: '1px solid rgba(0,0,0,0.1)',
                     cursor: 'pointer',
-                    backdropFilter: 'blur(10px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -619,112 +599,40 @@ export const Timer: React.FC<TimerProps> = ({
                 </button>
               </div>
             </div>
-
-            {/* Bottom Controls - Mode Pills (hover only) */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              gap: '10px',
-              marginTop: '28px',
-              opacity: isHovered ? 1 : 0,
-              transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
-              transition: 'all 0.3s ease',
-              pointerEvents: isHovered ? 'auto' : 'none',
-            }}>
-              {/* Mode Pills */}
-              <div style={{
-                display: 'flex',
-                gap: '6px',
-                padding: '6px',
-                borderRadius: '28px',
-                background: 'rgba(255,255,255,0.7)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.8)',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-              }}>
-                {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => onModeChange(m)}
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      border: 'none',
-                      borderRadius: '20px',
-                      background: mode === m 
-                        ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
-                        : 'transparent',
-                      boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      transition: 'all 0.2s',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    title={m === 'work' ? t.work : m === 'shortBreak' ? t.shortBreak : t.longBreak}
-                  >
-                    {m === 'work' ? '🍅' : m === 'shortBreak' ? '☕' : '🌴'}
-                  </button>
-                ))}
-              </div>
-
-              {/* Expand Button */}
-              <button
-                onClick={() => setIsExpanded(true)}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '20px',
-                  background: 'rgba(255,255,255,0.7)',
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255,255,255,0.8)',
-                  color: '#666',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-                }}
-                title="Expand"
-              >
-                ⤢
-              </button>
-            </div>
-          </div>
+          </>
         )}
       </div>
 
-      {/* Vertical Navigation - Right Side */}
+      {/* Vertical Navigation - Right Side (1/4 of timer card height each) */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: '2px',
+        height: `${TIMER_CARD_HEIGHT}px`,
+        justifyContent: 'space-between',
       }}>
         {navTabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
             style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '16px',
+              width: `${NAV_ICON_SIZE}px`,
+              height: `${NAV_ICON_SIZE}px`,
+              borderRadius: '8px',
               border: 'none',
               background: activeTab === tab.id 
                 ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
                 : 'rgba(255,255,255,0.4)',
               backdropFilter: 'blur(20px)',
               boxShadow: activeTab === tab.id 
-                ? '0 4px 16px rgba(0,0,0,0.1)' 
-                : '0 2px 8px rgba(0,0,0,0.04)',
+                ? '0 2px 8px rgba(0,0,0,0.1)' 
+                : 'none',
               cursor: 'pointer',
-              fontSize: '20px',
+              fontSize: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'all 0.2s ease',
-              transform: activeTab === tab.id ? 'scale(1.05)' : 'scale(1)',
             }}
           >
             {tab.icon}

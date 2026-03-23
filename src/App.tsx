@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTimer } from './hooks/useTimer';
 import { useTasks } from './hooks/useTasks';
 import { useStats } from './hooks/useStats';
@@ -17,6 +17,49 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>('timer');
   const { theme, setTheme, colors } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  
+  // Drag state
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button, input, select, textarea')) return;
+    setIsDragging(true);
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: position.x,
+      initialY: position.y,
+    };
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !dragRef.current) return;
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      setPosition({
+        x: dragRef.current.initialX + dx,
+        y: dragRef.current.initialY + dy,
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      dragRef.current = null;
+    };
+
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
   
   const {
     tasks,
@@ -62,19 +105,27 @@ function App() {
   ).length;
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: activeTab === 'timer' 
-        ? 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 50%, #e8e8f0 100%)'
-        : colors.background,
-      color: colors.text,
-      display: 'flex',
-      flexDirection: 'column',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
-      maxWidth: '420px',
-      margin: '0 auto',
-      position: 'relative',
-    }}>
+    <div 
+      onMouseDown={handleMouseDown}
+      style={{
+        minHeight: activeTab === 'timer' ? 'auto' : '100vh',
+        background: activeTab === 'timer' 
+          ? 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 50%, #e8e8f0 100%)'
+          : colors.background,
+        color: colors.text,
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+        maxWidth: activeTab === 'timer' ? 'fit-content' : '420px',
+        margin: '0 auto',
+        position: 'relative',
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        cursor: isDragging ? 'grabbing' : (activeTab === 'timer' ? 'grab' : 'default'),
+        userSelect: isDragging ? 'none' : 'auto',
+        borderRadius: activeTab === 'timer' ? '24px' : '0',
+        boxShadow: activeTab === 'timer' ? '0 8px 32px rgba(0,0,0,0.1)' : 'none',
+        overflow: 'hidden',
+      }}>
      
       <main style={{ 
         flex: 1, 

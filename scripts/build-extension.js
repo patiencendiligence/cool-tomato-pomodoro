@@ -12,11 +12,20 @@ fs.copyFileSync(
   path.join(distDir, 'manifest.json')
 );
 
-// Copy tomato mascot
-const mascotPath = path.join(publicDir, 'tomato-mascot.png');
-if (fs.existsSync(mascotPath)) {
-  fs.copyFileSync(mascotPath, path.join(distDir, 'tomato-mascot.png'));
-}
+// Copy tomato images
+const tomatoImages = [
+  'tomato-mascot.png',
+  'tomato-stage1.png',
+  'tomato-stage2.png',
+  'tomato-stage3.png',
+];
+
+tomatoImages.forEach(img => {
+  const imgPath = path.join(publicDir, img);
+  if (fs.existsSync(imgPath)) {
+    fs.copyFileSync(imgPath, path.join(distDir, img));
+  }
+});
 
 // Copy icons
 const iconsDir = path.join(publicDir, 'icons');
