@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개인정보처리방침 - 멋쟁이 토마토 Pomodoro Timer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      background: linear-gradient(135deg, #fff5f5 0%, #fff 50%, #f5fff5 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(255, 255, 255, 0.8) 100%);
+      border-radius: 20px;
+      border: 1px solid rgba(231, 76, 60, 0.2);
+    }
+    
+    header h1 {
+      font-size: 28px;
+      color: #c0392b;
+      margin-bottom: 10px;
+    }
+    
+    header p {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .lang-switch {
+      margin-top: 20px;
+    }
+    
+    .lang-switch a {
+      display: inline-block;
+      padding: 8px 20px;
+      margin: 0 5px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .lang-switch a.active {
+      background: #e74c3c;
+      color: #fff;
+    }
+    
+    .lang-switch a:not(.active) {
+      background: rgba(0,0,0,0.05);
+      color: #666;
+    }
+    
+    .lang-switch a:hover:not(.active) {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    .content {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    h2 {
+      font-size: 20px;
+      color: #e74c3c;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(231, 76, 60, 0.2);
+    }
+    
+    h2:first-child {
+      margin-top: 0;
+    }
+    
+    h3 {
+      font-size: 16px;
+      color: #333;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    p {
+      margin-bottom: 15px;
+      color: #555;
+    }
+    
+    ul {
+      margin-bottom: 15px;
+      padding-left: 25px;
+    }
+    
+    li {
+      margin-bottom: 8px;
+      color: #555;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    th {
+      background: rgba(231, 76, 60, 0.1);
+      color: #c0392b;
+      font-weight: 600;
+    }
+    
+    tr:hover {
+      background: rgba(0,0,0,0.02);
+    }
+    
+    .highlight {
+      background: rgba(231, 76, 60, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .highlight p {
+      margin: 0;
+    }
+    
+    .check-list li {
+      list-style: none;
+      position: relative;
+      padding-left: 10px;
+    }
+    
+    .check-list li::before {
+      content: "✅";
+      position: absolute;
+      left: -20px;
+    }
+    
+    .cross-list li {
+      list-style: none;
+      position: relative;
+      padding-left: 10px;
+    }
+    
+    .cross-list li::before {
+      content: "❌";
+      position: absolute;
+      left: -20px;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      color: #888;
+      font-size: 13px;
+    }
+    
+    footer a {
+      color: #e74c3c;
+      text-decoration: none;
+    }
+    
+    .section-ko, .section-en {
+      display: none;
+    }
+    
+    .section-ko.active, .section-en.active {
+      display: block;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px 15px;
+      }
+      
+      .content {
+        padding: 25px 20px;
+      }
+      
+      header h1 {
+        font-size: 22px;
+      }
+      
+      table {
+        font-size: 12px;
+      }
+      
+      th, td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🍅 멋쟁이 토마토 - Pomodoro Timer</h1>
+      <p>개인정보처리방침 / Privacy Policy</p>
+      <div class="lang-switch">
+        <a href="#" class="active" onclick="showLang('ko'); return false;">한국어</a>
+        <a href="#" onclick="showLang('en'); return false;">English</a>
+      </div>
+    </header>
+    
+    <div class="content">
+      <!-- Korean Version -->
+      <div class="section-ko active">
+        <p style="text-align: right; color: #888; font-size: 13px;">최종 수정일: 2026년 3월 23일</p>
+        
+        <h2>1. 개요</h2>
+        <p>본 개인정보처리방침은 "멋쟁이 토마토 - Pomodoro Timer" Chrome 확장 프로그램이 수집하는 정보와 그 사용 방법에 대해 설명합니다.</p>
+        <p>저희는 사용자의 개인정보 보호를 매우 중요하게 생각하며, 최소한의 데이터만을 수집하고 이를 안전하게 관리합니다.</p>
+        
+        <h2>2. 수집하는 정보</h2>
+        <h3>2.1 자동으로 수집되는 정보</h3>
+        <p><strong>본 확장 프로그램은 개인 식별 정보를 수집하지 않습니다.</strong></p>
+        
+        <h3>2.2 로컬에 저장되는 정보</h3>
+        <p>다음 정보는 사용자의 브라우저에 <strong>로컬로만</strong> 저장되며, 외부 서버로 전송되지 않습니다:</p>
+        <ul>
+          <li><strong>타이머 설정</strong>: 집중 시간, 휴식 시간, 긴 휴식 간격 등</li>
+          <li><strong>업무 목록</strong>: 사용자가 추가한 업무/태스크 정보</li>
+          <li><strong>통계 데이터</strong>: 완료한 포모도로 수, 집중 시간 등</li>
+          <li><strong>앱 설정</strong>: 테마, 언어, 알림 설정 등</li>
+          <li><strong>위젯 위치</strong>: 화면에서의 위젯 위치 좌표</li>
+        </ul>
+        
+        <h2>3. 정보의 사용</h2>
+        <p>저장된 모든 정보는 다음 목적으로만 사용됩니다:</p>
+        <ul>
+          <li>사용자 경험 개선 (설정 및 진행 상황 유지)</li>
+          <li>통계 및 리포트 제공</li>
+          <li>앱 기능 정상 작동</li>
+        </ul>
+        
+        <h2>4. 정보 공유</h2>
+        <p>본 확장 프로그램은:</p>
+        <ul class="cross-list">
+          <li>개인정보를 <strong>제3자에게 판매하지 않습니다</strong></li>
+          <li>개인정보를 <strong>외부 서버로 전송하지 않습니다</strong></li>
+          <li><strong>분석 도구나 광고 네트워크를 사용하지 않습니다</strong></li>
+          <li><strong>사용자 행동을 추적하지 않습니다</strong></li>
+        </ul>
+        
+        <h2>5. 데이터 저장 및 보안</h2>
+        <ul class="check-list">
+          <li>모든 데이터는 Chrome의 <code>chrome.storage.local</code> API를 통해 <strong>사용자의 기기에만</strong> 저장됩니다</li>
+          <li>데이터는 브라우저를 통해 암호화되어 저장됩니다</li>
+          <li>확장 프로그램을 제거하면 모든 데이터가 삭제됩니다</li>
+        </ul>
+        
+        <h2>6. 권한 설명</h2>
+        <table>
+          <tr>
+            <th>권한</th>
+            <th>목적</th>
+          </tr>
+          <tr>
+            <td><code>storage</code></td>
+            <td>타이머 설정, 업무 목록, 통계 데이터를 로컬에 저장</td>
+          </tr>
+          <tr>
+            <td><code>notifications</code></td>
+            <td>타이머 완료 시 알림 표시</td>
+          </tr>
+          <tr>
+            <td><code>alarms</code></td>
+            <td>백그라운드에서 타이머 관리</td>
+          </tr>
+        </table>
+        
+        <h2>7. Storage 권한 사용 근거</h2>
+        <div class="highlight">
+          <p><strong>왜 Storage 권한이 필요한가요?</strong></p>
+          <p>본 확장 프로그램은 포모도로 타이머 기능을 제공하기 위해 <code>chrome.storage.local</code> API를 사용합니다. 이 권한은 핵심 기능을 위해 반드시 필요합니다.</p>
+        </div>
+        
+        <h3>저장되는 데이터 상세</h3>
+        <table>
+          <tr>
+            <th>데이터</th>
+            <th>목적</th>
+          </tr>
+          <tr>
+            <td>타이머 설정</td>
+            <td>집중/휴식 시간 설정을 매번 다시 입력하지 않도록</td>
+          </tr>
+          <tr>
+            <td>업무 목록</td>
+            <td>브라우저를 닫아도 업무 목록 유지</td>
+          </tr>
+          <tr>
+            <td>완료 포모도로</td>
+            <td>생산성 추적 및 통계 제공</td>
+          </tr>
+          <tr>
+            <td>테마/언어 설정</td>
+            <td>사용자 선호도 유지</td>
+          </tr>
+          <tr>
+            <td>위젯 위치</td>
+            <td>배치한 위젯 위치 기억</td>
+          </tr>
+        </table>
+        
+        <h3>데이터 보안</h3>
+        <ul class="check-list">
+          <li>모든 데이터는 <strong>사용자의 로컬 기기에만</strong> 저장됩니다</li>
+          <li><strong>외부 서버로 전송되지 않습니다</strong></li>
+          <li><strong>제3자와 공유되지 않습니다</strong></li>
+          <li>확장 프로그램 삭제 시 <strong>모든 데이터가 완전히 삭제</strong>됩니다</li>
+        </ul>
+        
+        <h2>8. 사용자 권리</h2>
+        <p>사용자는 언제든지:</p>
+        <ul>
+          <li>브라우저 설정에서 확장 프로그램 데이터를 삭제할 수 있습니다</li>
+          <li>확장 프로그램을 제거하여 모든 데이터를 삭제할 수 있습니다</li>
+          <li>앱 내 설정에서 개별 데이터를 관리할 수 있습니다</li>
+        </ul>
+        
+        <h2>9. 아동 개인정보 보호</h2>
+        <p>본 확장 프로그램은 13세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다.</p>
+        
+        <h2>10. 문의</h2>
+        <p>개인정보처리방침에 관한 문의사항이 있으시면 GitHub Issues를 통해 문의해 주세요:</p>
+        <p><a href="https://github.com/patiencendiligence/cool-tomato-pomodoro" target="_blank">https://github.com/patiencendiligence/cool-tomato-pomodoro</a></p>
+        
+        <h2>11. 동의</h2>
+        <p>본 확장 프로그램을 설치하고 사용함으로써, 사용자는 본 개인정보처리방침에 동의하는 것으로 간주됩니다.</p>
+      </div>
+      
+      <!-- English Version -->
+      <div class="section-en">
+        <p style="text-align: right; color: #888; font-size: 13px;">Last Updated: March 23, 2026</p>
+        
+        <h2>1. Overview</h2>
+        <p>This Privacy Policy explains what information the "Cool Tomato - Pomodoro Timer" Chrome extension collects and how it is used.</p>
+        <p>We take user privacy very seriously and collect only minimal data necessary for the app to function.</p>
+        
+        <h2>2. Information We Collect</h2>
+        <h3>2.1 Automatically Collected Information</h3>
+        <p><strong>This extension does NOT collect any personally identifiable information.</strong></p>
+        
+        <h3>2.2 Locally Stored Information</h3>
+        <p>The following information is stored <strong>locally only</strong> in your browser and is never transmitted to external servers:</p>
+        <ul>
+          <li><strong>Timer Settings</strong>: Focus time, break time, long break intervals</li>
+          <li><strong>Task List</strong>: Tasks added by the user</li>
+          <li><strong>Statistics</strong>: Completed pomodoros, focus time</li>
+          <li><strong>App Settings</strong>: Theme, language, notification preferences</li>
+          <li><strong>Widget Position</strong>: Widget coordinates on screen</li>
+        </ul>
+        
+        <h2>3. Use of Information</h2>
+        <p>All stored information is used solely for:</p>
+        <ul>
+          <li>Improving user experience (maintaining settings and progress)</li>
+          <li>Providing statistics and reports</li>
+          <li>Ensuring proper app functionality</li>
+        </ul>
+        
+        <h2>4. Information Sharing</h2>
+        <p>This extension:</p>
+        <ul class="cross-list">
+          <li>Does <strong>NOT sell</strong> personal information to third parties</li>
+          <li>Does <strong>NOT transmit</strong> data to external servers</li>
+          <li>Does <strong>NOT use</strong> analytics tools or advertising networks</li>
+          <li>Does <strong>NOT track</strong> user behavior</li>
+        </ul>
+        
+        <h2>5. Data Storage and Security</h2>
+        <ul class="check-list">
+          <li>All data is stored <strong>only on your device</strong> using Chrome's <code>chrome.storage.local</code> API</li>
+          <li>Data is encrypted by the browser</li>
+          <li>Uninstalling the extension deletes all data</li>
+        </ul>
+        
+        <h2>6. Permissions Explained</h2>
+        <table>
+          <tr>
+            <th>Permission</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td><code>storage</code></td>
+            <td>Store timer settings, task list, and statistics locally</td>
+          </tr>
+          <tr>
+            <td><code>notifications</code></td>
+            <td>Display notifications when timer completes</td>
+          </tr>
+          <tr>
+            <td><code>alarms</code></td>
+            <td>Manage timer in background</td>
+          </tr>
+        </table>
+        
+        <h2>7. Justification for Storage Permission</h2>
+        <div class="highlight">
+          <p><strong>Why is the Storage Permission Required?</strong></p>
+          <p>This extension uses the <code>chrome.storage.local</code> API to provide Pomodoro timer functionality. This permission is essential for core features.</p>
+        </div>
+        
+        <h3>Detailed Data Stored</h3>
+        <table>
+          <tr>
+            <th>Data</th>
+            <th>Purpose</th>
+          </tr>
+          <tr>
+            <td>Timer Settings</td>
+            <td>Users don't need to re-enter settings each time</td>
+          </tr>
+          <tr>
+            <td>Task List</td>
+            <td>Persists across browser sessions</td>
+          </tr>
+          <tr>
+            <td>Completed Pomodoros</td>
+            <td>Productivity tracking and reports</td>
+          </tr>
+          <tr>
+            <td>Theme/Language</td>
+            <td>Maintain user preferences</td>
+          </tr>
+          <tr>
+            <td>Widget Position</td>
+            <td>Remember user's preferred placement</td>
+          </tr>
+        </table>
+        
+        <h3>Data Security</h3>
+        <ul class="check-list">
+          <li>All data is stored <strong>only on the user's local device</strong></li>
+          <li><strong>Never transmitted</strong> to external servers</li>
+          <li><strong>Never shared</strong> with third parties</li>
+          <li><strong>Completely deleted</strong> when the extension is uninstalled</li>
+        </ul>
+        
+        <h2>8. User Rights</h2>
+        <p>Users can at any time:</p>
+        <ul>
+          <li>Delete extension data through browser settings</li>
+          <li>Uninstall the extension to remove all data</li>
+          <li>Manage individual data within app settings</li>
+        </ul>
+        
+        <h2>9. Children's Privacy</h2>
+        <p>This extension does not knowingly collect personal information from children under 13 years of age.</p>
+        
+        <h2>10. Contact</h2>
+        <p>For questions about this Privacy Policy, please submit via GitHub Issues:</p>
+        <p><a href="https://github.com/patiencendiligence/cool-tomato-pomodoro" target="_blank">https://github.com/patiencendiligence/cool-tomato-pomodoro</a></p>
+        
+        <h2>11. Consent</h2>
+        <p>By installing and using this extension, you agree to this Privacy Policy.</p>
+      </div>
+    </div>
+    
+    <footer>
+      <p>🍅 멋쟁이 토마토 - Pomodoro Timer</p>
+      <p><a href="https://github.com/patiencendiligence/cool-tomato-pomodoro">GitHub</a></p>
+    </footer>
+  </div>
+  
+  <script>
+    function showLang(lang) {
+      document.querySelectorAll('.lang-switch a').forEach(a => a.classList.remove('active'));
+      document.querySelectorAll('.section-ko, .section-en').forEach(s => s.classList.remove('active'));
+      
+      if (lang === 'ko') {
+        document.querySelector('.section-ko').classList.add('active');
+        document.querySelectorAll('.lang-switch a')[0].classList.add('active');
+      } else {
+        document.querySelector('.section-en').classList.add('active');
+        document.querySelectorAll('.lang-switch a')[1].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
