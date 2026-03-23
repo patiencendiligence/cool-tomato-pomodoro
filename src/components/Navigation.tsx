@@ -13,7 +13,6 @@ interface NavigationProps {
 export const Navigation: React.FC<NavigationProps> = ({
   activeTab,
   onTabChange,
-  colors,
   t,
 }) => {
   const tabs: { id: Tab; icon: string; label: string }[] = [
@@ -26,36 +25,73 @@ export const Navigation: React.FC<NavigationProps> = ({
   return (
     <nav style={{
       display: 'flex',
-      justifyContent: 'space-around',
-      padding: '8px 0',
-      backgroundColor: colors.surface,
-      borderTop: `1px solid ${colors.border}`,
-      position: 'sticky',
+      justifyContent: 'center',
+      padding: '12px 20px 20px',
+      position: 'fixed',
       bottom: 0,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      maxWidth: '420px',
+      width: '100%',
+      boxSizing: 'border-box',
     }}>
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '8px 16px',
-            border: 'none',
-            backgroundColor: 'transparent',
-            color: activeTab === tab.id ? colors.primary : colors.textSecondary,
-            cursor: 'pointer',
-            transition: 'color 0.2s',
-          }}
-        >
-          <span style={{ fontSize: '20px' }}>{tab.icon}</span>
-          <span style={{ fontSize: '11px', fontWeight: activeTab === tab.id ? 'bold' : 'normal' }}>
-            {tab.label}
-          </span>
-        </button>
-      ))}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '8px 12px',
+        borderRadius: '28px',
+        background: 'rgba(255, 255, 255, 0.75)',
+        backdropFilter: 'blur(40px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.6)',
+        boxShadow: `
+          0 8px 32px rgba(0, 0, 0, 0.08),
+          0 2px 8px rgba(0, 0, 0, 0.04),
+          inset 0 1px 1px rgba(255, 255, 255, 0.8)
+        `,
+      }}>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => onTabChange(tab.id)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              padding: activeTab === tab.id ? '10px 18px' : '10px 14px',
+              border: 'none',
+              borderRadius: '20px',
+              background: activeTab === tab.id 
+                ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
+                : 'transparent',
+              boxShadow: activeTab === tab.id ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <span style={{ 
+              fontSize: '18px',
+              filter: activeTab === tab.id ? 'none' : 'grayscale(30%)',
+              opacity: activeTab === tab.id ? 1 : 0.7,
+            }}>
+              {tab.icon}
+            </span>
+            {activeTab === tab.id && (
+              <span style={{ 
+                fontSize: '12px', 
+                fontWeight: '600',
+                color: '#1a1a1a',
+                letterSpacing: '0.2px',
+              }}>
+                {tab.label}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
     </nav>
   );
 };

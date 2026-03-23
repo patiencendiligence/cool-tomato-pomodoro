@@ -35,28 +35,46 @@ export const Timer: React.FC<TimerProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   
-  const hours = Math.floor(timeLeft / 3600);
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
 
-  const getModeColor = () => {
-    if (mode === 'work') return 'rgba(231, 76, 60, 0.6)';
-    return 'rgba(39, 174, 96, 0.6)';
-  };
-
-  const getModeGlow = () => {
-    if (mode === 'work') return '0 0 60px rgba(231, 76, 60, 0.4)';
-    return '0 0 60px rgba(39, 174, 96, 0.4)';
-  };
-
   const getStatusEmoji = () => {
-    if (!isRunning) return '☕';
-    return mode === 'work' ? '🍅' : '☕';
+    if (mode === 'work') return '🍅';
+    if (mode === 'shortBreak') return '☕';
+    return '🌴';
+  };
+
+  const getStatusLabel = () => {
+    if (mode === 'work') return t.work;
+    if (mode === 'shortBreak') return t.shortBreak;
+    return t.longBreak;
   };
 
   const isFullTime = timeLeft === (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60);
 
-  // Expanded view - Big Typography Style
+  // Liquid Glass Style - color based on mode
+  const getModeColor = () => {
+    if (mode === 'work') return { r: 231, g: 76, b: 60 };
+    if (mode === 'shortBreak') return { r: 39, g: 174, b: 96 };
+    return { r: 46, g: 204, b: 113 };
+  };
+  const modeColor = getModeColor();
+
+  const liquidGlassStyle: React.CSSProperties = {
+    background: `linear-gradient(135deg, rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.12) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.08) 100%)`,
+    backdropFilter: 'blur(40px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+    borderRadius: '32px',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    boxShadow: `
+      0 8px 32px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.3)
+    `,
+  };
+
+  // Expanded view
   if (isExpanded) {
     return (
       <div 
@@ -67,11 +85,12 @@ export const Timer: React.FC<TimerProps> = ({
           padding: '20px',
           minHeight: '400px',
           position: 'relative',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(240,240,245,0.98) 100%)',
-          backdropFilter: 'blur(20px)',
-          borderRadius: '32px',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(245,245,250,0.95) 100%)',
+          backdropFilter: 'blur(40px)',
+          borderRadius: '40px',
           margin: '10px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8)',
+          border: '1px solid rgba(255,255,255,0.6)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.9)',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -87,28 +106,33 @@ export const Timer: React.FC<TimerProps> = ({
           <button
             onClick={() => setIsExpanded(false)}
             style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: 'none',
-              background: 'rgba(0,0,0,0.05)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '22px',
+              border: '1px solid rgba(0,0,0,0.06)',
+              background: 'rgba(255,255,255,0.7)',
+              backdropFilter: 'blur(20px)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
             }}
           >
-            ⏱
+            ✕
           </button>
           
-          {/* Mode selector on hover */}
+          {/* Mode selector */}
           <div style={{
             display: 'flex',
-            background: 'rgba(0,0,0,0.08)',
-            borderRadius: '20px',
+            background: 'rgba(255,255,255,0.6)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
             padding: '4px',
-            opacity: isHovered ? 1 : 0,
+            border: '1px solid rgba(255,255,255,0.8)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            opacity: isHovered ? 1 : 0.6,
             transition: 'opacity 0.3s',
           }}>
             {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
@@ -116,13 +140,16 @@ export const Timer: React.FC<TimerProps> = ({
                 key={m}
                 onClick={() => onModeChange(m)}
                 style={{
-                  padding: '6px 12px',
+                  padding: '8px 14px',
                   border: 'none',
-                  borderRadius: '16px',
-                  background: mode === m ? '#000' : 'transparent',
-                  color: mode === m ? '#fff' : '#666',
+                  borderRadius: '20px',
+                  background: mode === m 
+                    ? 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)'
+                    : 'transparent',
+                  boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                  color: '#333',
                   cursor: 'pointer',
-                  fontSize: '11px',
+                  fontSize: '14px',
                   fontWeight: '500',
                 }}
               >
@@ -132,7 +159,7 @@ export const Timer: React.FC<TimerProps> = ({
           </div>
         </div>
 
-        {/* Bouncing Tomato OR Timer */}
+        {/* Content */}
         {!isRunning ? (
           <div style={{
             flex: 1,
@@ -146,23 +173,29 @@ export const Timer: React.FC<TimerProps> = ({
                 src="/tomato-mascot.png" 
                 alt="Cool Tomato"
                 style={{
-                  width: '150px',
-                  height: '150px',
+                  width: '140px',
+                  height: '140px',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 10px 20px rgba(231, 76, 60, 0.3))',
+                  filter: 'drop-shadow(0 12px 24px rgba(231, 76, 60, 0.25))',
                 }}
               />
             </div>
             <div style={{
-              marginTop: '20px',
-              padding: '8px 20px',
-              borderRadius: '20px',
-              background: 'rgba(39, 174, 96, 0.15)',
-              color: '#27ae60',
-              fontSize: '14px',
-              fontWeight: '500',
+              marginTop: '24px',
+              padding: '10px 24px',
+              borderRadius: '24px',
+              background: mode === 'work'
+                ? 'linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(231, 76, 60, 0.08) 100%)'
+                : mode === 'shortBreak'
+                ? 'linear-gradient(135deg, rgba(39, 174, 96, 0.15) 0%, rgba(39, 174, 96, 0.08) 100%)'
+                : 'linear-gradient(135deg, rgba(46, 204, 113, 0.15) 0%, rgba(46, 204, 113, 0.08) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: `1px solid ${mode === 'work' ? 'rgba(231, 76, 60, 0.2)' : 'rgba(39, 174, 96, 0.2)'}`,
+              color: mode === 'work' ? '#c0392b' : '#27ae60',
+              fontSize: '15px',
+              fontWeight: '600',
             }}>
-              ☕ {t.shortBreak}
+              {getStatusEmoji()} {getStatusLabel()}
             </div>
           </div>
         ) : (
@@ -173,105 +206,72 @@ export const Timer: React.FC<TimerProps> = ({
             justifyContent: 'center',
             alignItems: 'flex-start',
             width: '100%',
-            paddingLeft: '10px',
+            paddingLeft: '16px',
           }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-              <span style={{
-                fontSize: '96px',
-                fontWeight: '700',
-                color: '#000',
-                lineHeight: 0.9,
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                letterSpacing: '-4px',
-              }}>
-                {String(minutes).padStart(2, '0')}
-              </span>
-              <span style={{
-                fontSize: '24px',
-                color: '#666',
-                marginBottom: '15px',
-                fontWeight: '400',
-              }}>
-                {t.work}
-              </span>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-              <span style={{
-                fontSize: '96px',
-                fontWeight: '700',
-                color: '#000',
-                lineHeight: 0.9,
-                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                letterSpacing: '-4px',
-              }}>
-                {String(seconds).padStart(2, '0')}
-              </span>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                marginBottom: '12px',
-                opacity: 0.3,
-              }}>
-                <span style={{ fontSize: '28px', fontWeight: '600', color: '#000' }}>
-                  {String((seconds + 1) % 60).padStart(2, '0')}
-                </span>
-              </div>
-            </div>
-
-            <div style={{ marginTop: '24px' }}>
-              <div style={{
-                fontSize: '14px',
-                color: '#888',
-              }}>
-                🔄 {pomodorosInCycle}/{longBreakInterval} • 🍅 {totalPomodoros} {t.pomodoro}
-              </div>
+            <span style={{
+              fontSize: '88px',
+              fontWeight: '200',
+              color: '#1a1a1a',
+              lineHeight: 1,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              letterSpacing: '-3px',
+            }}>
+              {String(minutes).padStart(2, '0')}
+            </span>
+            <span style={{
+              fontSize: '88px',
+              fontWeight: '200',
+              color: '#1a1a1a',
+              lineHeight: 1,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              letterSpacing: '-3px',
+            }}>
+              {String(seconds).padStart(2, '0')}
+            </span>
+            <div style={{ marginTop: '20px', fontSize: '13px', color: '#888' }}>
+              🔄 {pomodorosInCycle}/{longBreakInterval} • 🍅 {totalPomodoros}
             </div>
           </div>
         )}
 
-        {/* Bottom Controls */}
+        {/* Bottom Control */}
         <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '12px',
-          width: '100%',
           paddingTop: '20px',
-          borderTop: '1px solid rgba(0,0,0,0.05)',
         }}>
           {!isRunning ? (
             <button
               onClick={isFullTime ? onStart : onResume}
               style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
+                width: '64px',
+                height: '64px',
+                borderRadius: '32px',
                 border: 'none',
-                background: '#000',
+                background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
                 color: '#fff',
                 cursor: 'pointer',
-                fontSize: '20px',
+                fontSize: '22px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
               }}
             >
               ▶
             </button>
           ) : (
-            <>
+            <div style={{ display: 'flex', gap: '12px' }}>
               <button
                 onClick={onPause}
                 style={{
                   width: '56px',
                   height: '56px',
-                  borderRadius: '50%',
+                  borderRadius: '28px',
                   border: 'none',
-                  background: '#000',
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
                   color: '#fff',
                   cursor: 'pointer',
                   fontSize: '18px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
                 }}
               >
                 ⏸
@@ -281,85 +281,48 @@ export const Timer: React.FC<TimerProps> = ({
                 style={{
                   width: '56px',
                   height: '56px',
-                  borderRadius: '50%',
-                  border: '2px solid rgba(0,0,0,0.1)',
-                  background: 'transparent',
+                  borderRadius: '28px',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  background: 'rgba(255,255,255,0.8)',
+                  backdropFilter: 'blur(20px)',
                   cursor: 'pointer',
                   fontSize: '16px',
                 }}
               >
                 ⏭
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>
     );
   }
 
-  // Compact view - Liquid Glass Style
-  const glassStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, rgba(45, 45, 55, 0.9) 0%, rgba(30, 30, 40, 0.95) 100%)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
-    borderRadius: '24px',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    boxShadow: `
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-      ${getModeGlow()}
-    `,
-  };
-
-  const timeBlockStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '0 20px',
-  };
-
-  const dividerStyle: React.CSSProperties = {
-    width: '1px',
-    height: '50px',
-    background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%)',
-  };
-
-  const numberStyle: React.CSSProperties = {
-    fontSize: '48px',
-    fontWeight: '300',
-    color: '#ffffff',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-    letterSpacing: '-2px',
-    lineHeight: 1,
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontSize: '11px',
-    color: 'rgba(255, 255, 255, 0.5)',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    marginTop: '8px',
-  };
-
+  // Compact view - True Liquid Glass Style
   return (
     <div 
       style={{ 
         display: 'flex', 
         flexDirection: 'column', 
         alignItems: 'center', 
-        padding: '30px 20px',
+        padding: '40px 20px',
         position: 'relative',
+        background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
+        minHeight: '100%',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Bouncing Tomato when stopped - OR - Timer when running */}
-      {!isRunning ? (
-        <div style={{
-          marginBottom: '20px',
-          animation: 'bounce 1s ease-in-out infinite',
-        }}>
+      {/* Bouncing Tomato when stopped */}
+      {!isRunning && (
+        <div 
+          style={{
+            marginBottom: '24px',
+            animation: 'bounce 1s ease-in-out infinite',
+            cursor: 'pointer',
+          }}
+          onClick={isFullTime ? onStart : onResume}
+        >
           <img 
             src="/tomato-mascot.png" 
             alt="Cool Tomato"
@@ -367,105 +330,145 @@ export const Timer: React.FC<TimerProps> = ({
               width: '100px',
               height: '100px',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 8px 16px rgba(231, 76, 60, 0.3))',
-              cursor: 'pointer',
+              filter: 'drop-shadow(0 12px 24px rgba(231, 76, 60, 0.2))',
             }}
-            onClick={isFullTime ? onStart : onResume}
           />
         </div>
-      ) : null}
+      )}
 
-      {/* Main Timer Display - Liquid Glass (only when running OR always show compact) */}
+      {/* Liquid Glass Timer Container */}
       <div
         style={{
-          ...glassStyle,
-          padding: '24px 16px',
-          display: isRunning ? 'flex' : 'flex',
+          ...liquidGlassStyle,
+          padding: '28px 24px',
+          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           transform: isHovered ? 'scale(1.02)' : 'scale(1)',
           position: 'relative',
-          overflow: 'hidden',
-          opacity: isRunning ? 1 : 0.6,
+          overflow: 'visible',
         }}
       >
-        {/* Status Badge - Top Right */}
+        {/* Status Badge - Liquid Glass Pill */}
         <div style={{
           position: 'absolute',
-          top: '-12px',
-          right: '-8px',
-          padding: '6px 14px',
-          borderRadius: '16px',
-          background: isRunning ? getModeColor() : 'rgba(39, 174, 96, 0.8)',
-          backdropFilter: 'blur(10px)',
+          top: '-14px',
+          right: '16px',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          background: mode === 'work'
+            ? 'linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%)'
+            : mode === 'shortBreak'
+            ? 'linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(39, 174, 96, 0.1) 100%)'
+            : 'linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: `1px solid ${mode === 'work' ? 'rgba(231, 76, 60, 0.3)' : 'rgba(39, 174, 96, 0.3)'}`,
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
         }}>
-          <span style={{ fontSize: '12px' }}>{getStatusEmoji()}</span>
+          <span style={{ fontSize: '13px' }}>{getStatusEmoji()}</span>
           <span style={{ 
-            color: '#fff', 
-            fontSize: '11px', 
+            color: mode === 'work' ? '#c0392b' : '#1e8449', 
+            fontSize: '12px', 
             fontWeight: '600',
-            letterSpacing: '0.5px',
+            letterSpacing: '0.3px',
           }}>
-            {isRunning ? (mode === 'work' ? t.work : t.shortBreak) : t.shortBreak}
+            {getStatusLabel()}
           </span>
         </div>
 
-        {/* Progress bar at bottom */}
+        {/* Progress bar - Liquid style */}
         <div style={{
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          height: '3px',
-          width: `${((mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) - timeLeft) / (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) * 100}%`,
-          background: mode === 'work' 
-            ? 'linear-gradient(90deg, #e74c3c, #ff6b5b)' 
-            : 'linear-gradient(90deg, #27ae60, #2ecc71)',
-          borderRadius: '0 2px 2px 0',
-          transition: 'width 1s linear',
-        }} />
+          bottom: '8px',
+          left: '16px',
+          right: '16px',
+          height: '4px',
+          borderRadius: '2px',
+          background: 'rgba(0,0,0,0.05)',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${((mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) - timeLeft) / (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) * 100}%`,
+            background: `linear-gradient(90deg, rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.8), rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.5))`,
+            borderRadius: '2px',
+            transition: 'width 1s linear',
+          }} />
+        </div>
 
-        {hours > 0 && (
-          <>
-            <div style={timeBlockStyle}>
-              <span style={numberStyle}>{String(hours).padStart(2, '0')}</span>
-              <span style={labelStyle}>{t.hours}</span>
+        {/* Time Display */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <span style={{
+              fontSize: '52px',
+              fontWeight: '300',
+              color: '#1a1a1a',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              letterSpacing: '-2px',
+              lineHeight: 1,
+            }}>
+              {String(minutes).padStart(2, '0')}
+            </span>
+            <div style={{
+              fontSize: '11px',
+              color: 'rgba(0,0,0,0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginTop: '6px',
+            }}>
+              {t.minutes}
             </div>
-            <div style={dividerStyle} />
-          </>
-        )}
-        
-        <div style={timeBlockStyle}>
-          <span style={numberStyle}>{String(minutes).padStart(2, '0')}</span>
-          <span style={labelStyle}>{t.minutes}</span>
-        </div>
-        
-        <div style={dividerStyle} />
-        
-        <div style={timeBlockStyle}>
-          <span style={{
-            ...numberStyle,
-            color: isRunning ? '#fff' : 'rgba(255,255,255,0.6)',
-          }}>
-            {String(seconds).padStart(2, '0')}
-          </span>
-          <span style={labelStyle}>{t.seconds}</span>
+          </div>
+
+          {/* Divider - Liquid Glass */}
+          <div style={{
+            width: '2px',
+            height: '40px',
+            background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
+            borderRadius: '1px',
+          }} />
+
+          <div style={{ textAlign: 'center' }}>
+            <span style={{
+              fontSize: '52px',
+              fontWeight: '300',
+              color: isRunning ? '#1a1a1a' : 'rgba(26,26,26,0.5)',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+              letterSpacing: '-2px',
+              lineHeight: 1,
+            }}>
+              {String(seconds).padStart(2, '0')}
+            </span>
+            <div style={{
+              fontSize: '11px',
+              color: 'rgba(0,0,0,0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              marginTop: '6px',
+            }}>
+              {t.seconds}
+            </div>
+          </div>
         </div>
 
-        {/* Hover Controls Overlay */}
+        {/* Hover Controls - Liquid Glass Overlay */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.75)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(20px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -473,22 +476,21 @@ export const Timer: React.FC<TimerProps> = ({
           opacity: isHovered ? 1 : 0,
           transition: 'opacity 0.3s ease',
           pointerEvents: isHovered ? 'auto' : 'none',
-          borderRadius: '24px',
+          borderRadius: '32px',
         }}>
           {!isRunning ? (
             <button
               onClick={isFullTime ? onStart : onResume}
               style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                fontSize: '20px',
-                fontWeight: '600',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
-                color: '#333',
+                width: '60px',
+                height: '60px',
+                borderRadius: '30px',
+                fontSize: '22px',
+                background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
+                color: '#fff',
                 border: 'none',
                 cursor: 'pointer',
-                boxShadow: '0 4px 15px rgba(255,255,255,0.3)',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -501,16 +503,15 @@ export const Timer: React.FC<TimerProps> = ({
               <button
                 onClick={onPause}
                 style={{
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
-                  color: '#333',
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '26px',
+                  fontSize: '18px',
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
+                  color: '#fff',
                   border: 'none',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(255,255,255,0.3)',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -523,12 +524,13 @@ export const Timer: React.FC<TimerProps> = ({
                 style={{
                   width: '44px',
                   height: '44px',
-                  borderRadius: '50%',
+                  borderRadius: '22px',
                   fontSize: '14px',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.9)',
+                  color: '#333',
+                  border: '1px solid rgba(0,0,0,0.1)',
                   cursor: 'pointer',
+                  backdropFilter: 'blur(10px)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -541,37 +543,41 @@ export const Timer: React.FC<TimerProps> = ({
         </div>
       </div>
 
-      {/* Bottom Controls - Icons only, show on hover */}
+      {/* Bottom Controls - Liquid Glass Pills (hover only) */}
       <div style={{ 
         display: 'flex', 
         alignItems: 'center',
-        gap: '12px',
-        marginTop: '24px',
+        gap: '10px',
+        marginTop: '28px',
         opacity: isHovered ? 1 : 0,
-        transform: isHovered ? 'translateY(0)' : 'translateY(10px)',
+        transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
         transition: 'all 0.3s ease',
         pointerEvents: isHovered ? 'auto' : 'none',
       }}>
+        {/* Mode Pills */}
         <div style={{
           display: 'flex',
-          gap: '4px',
-          padding: '8px',
-          borderRadius: '20px',
-          background: 'rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(10px)',
+          gap: '6px',
+          padding: '6px',
+          borderRadius: '28px',
+          background: 'rgba(255,255,255,0.7)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.8)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
         }}>
           {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
             <button
               key={m}
               onClick={() => onModeChange(m)}
               style={{
-                width: '36px',
-                height: '36px',
+                width: '40px',
+                height: '40px',
                 border: 'none',
-                borderRadius: '50%',
+                borderRadius: '20px',
                 background: mode === m 
-                  ? 'rgba(255,255,255,0.2)' 
+                  ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
                   : 'transparent',
+                boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
                 cursor: 'pointer',
                 fontSize: '16px',
                 transition: 'all 0.2s',
@@ -586,21 +592,23 @@ export const Timer: React.FC<TimerProps> = ({
           ))}
         </div>
 
+        {/* Expand Button */}
         <button
           onClick={() => setIsExpanded(true)}
           style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.08)',
-            border: '1px solid rgba(255,255,255,0.15)',
-            color: '#fff',
+            width: '40px',
+            height: '40px',
+            borderRadius: '20px',
+            background: 'rgba(255,255,255,0.7)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.8)',
+            color: '#666',
             cursor: 'pointer',
-            fontSize: '14px',
+            fontSize: '16px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
           }}
           title="Expand"
         >
@@ -608,16 +616,18 @@ export const Timer: React.FC<TimerProps> = ({
         </button>
       </div>
 
-      {/* Stats Row - Always visible */}
+      {/* Stats Row - Liquid Glass */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         gap: '16px',
-        marginTop: isHovered ? '16px' : '24px',
-        padding: '10px 20px',
-        borderRadius: '16px',
-        background: 'rgba(255,255,255,0.03)',
-        backdropFilter: 'blur(10px)',
+        marginTop: isHovered ? '20px' : '28px',
+        padding: '12px 20px',
+        borderRadius: '24px',
+        background: 'rgba(255,255,255,0.6)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.8)',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
         transition: 'margin-top 0.3s ease',
       }}>
         <div style={{
@@ -626,9 +636,9 @@ export const Timer: React.FC<TimerProps> = ({
           gap: '6px',
         }}>
           <span style={{ fontSize: '14px' }}>🔄</span>
-          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{t.round}</span>
+          <span style={{ color: 'rgba(0,0,0,0.4)', fontSize: '12px' }}>{t.round}</span>
           <span style={{ 
-            color: '#fff', 
+            color: '#1a1a1a', 
             fontWeight: '600',
             fontSize: '13px',
           }}>
@@ -639,7 +649,7 @@ export const Timer: React.FC<TimerProps> = ({
         <div style={{
           width: '1px',
           height: '16px',
-          background: 'rgba(255,255,255,0.1)',
+          background: 'rgba(0,0,0,0.1)',
         }} />
         
         <div style={{
@@ -648,9 +658,9 @@ export const Timer: React.FC<TimerProps> = ({
           gap: '6px',
         }}>
           <span style={{ fontSize: '14px' }}>🍅</span>
-          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px' }}>{t.totalPomodoros}</span>
+          <span style={{ color: 'rgba(0,0,0,0.4)', fontSize: '12px' }}>{t.totalPomodoros}</span>
           <span style={{ 
-            color: '#fff', 
+            color: '#1a1a1a', 
             fontWeight: '600',
             fontSize: '13px',
           }}>
