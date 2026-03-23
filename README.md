@@ -1,4 +1,78 @@
-# 🍅 멋쟁이 토마토 (Cool Tomato - Pomodoro Timer)
+# 🍅 Cool Tomato - Pomodoro Timer
+
+**[한국어](#-멋쟁이-토마토-pomodoro-timer) | English**
+
+A Pomodoro Timer & Task Manager app to help you stay focused and achieve your goals!
+
+## ✨ Features
+
+### ⏱️ Pomodoro Timer
+- 25 min focus → 5 min short break → 20 min long break after 4 rounds
+- Visual circular progress bar
+- Start/Pause/Skip timer controls
+- Customizable focus/break durations
+- Auto-start options
+
+### ✅ Task Management
+- Add/Delete/Complete tasks
+- Priority levels (High/Medium/Low)
+- Estimated pomodoros per task
+- Auto-count completed pomodoros
+- Filter by Active/Completed
+
+### 📊 Stats & Reports
+- Today's pomodoro count
+- Total focus time
+- Tasks completed
+- Weekly statistics chart
+
+### ⚙️ Settings
+- Customizable timer durations
+- Notification settings
+- Sound settings
+- 3 themes (Light/Dark/Tomato)
+- Multi-language support (Korean/English)
+
+## 🌍 Language Support
+- Korean users: Automatically displays in Korean
+- Other regions: Automatically displays in English
+- Can be changed in Settings
+- Preferences saved to localStorage
+
+## 🚀 How to Use the Pomodoro Technique
+
+1. **Select a task**: Choose a task to focus on
+2. **Focus for 25 min**: Start the timer and work without interruptions
+3. **Take a 5 min break**: Rest when the timer ends
+4. **Repeat**: Continue steps 2-3
+5. **Long break**: Take a 20 min break after 4 pomodoros
+
+## 💻 Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Production build
+npm run build
+```
+
+## 🔧 Chrome Extension Installation
+
+1. Run `npm run build`
+2. Go to `chrome://extensions` in Chrome
+3. Enable "Developer mode"
+4. Click "Load unpacked"
+5. Select the `dist` folder
+
+---
+
+# 🍅 멋쟁이 토마토 (Pomodoro Timer)
+
+**한국어 | [English](#-cool-tomato---pomodoro-timer)**
 
 목표달성을 위해 집중하는 멋쟁이 토마토! 포모도로 타이머와 업무 관리 기능을 합친 앱입니다.
 
@@ -66,33 +140,35 @@ npm run build
 4. "압축해제된 확장 프로그램을 로드합니다" 클릭
 5. `dist` 폴더 선택
 
-## 📁 프로젝트 구조
+---
+
+## 📁 Project Structure / 프로젝트 구조
 
 ```
 src/
-├── components/     # UI 컴포넌트
-│   ├── Timer.tsx       # 포모도로 타이머
-│   ├── TaskList.tsx    # 업무 목록
-│   ├── Stats.tsx       # 통계
-│   ├── Settings.tsx    # 설정
-│   └── Navigation.tsx  # 하단 네비게이션
-├── hooks/          # 커스텀 훅
-│   ├── useTimer.ts     # 타이머 로직
-│   ├── useTasks.ts     # 업무 관리
-│   ├── useStats.ts     # 통계 관리
-│   ├── useTheme.ts     # 테마 관리
-│   └── useLanguage.ts  # 다국어 지원
-├── types/          # TypeScript 타입
-└── App.tsx         # 메인 앱
+├── components/     # UI Components
+│   ├── Timer.tsx       # Pomodoro Timer
+│   ├── TaskList.tsx    # Task List
+│   ├── Stats.tsx       # Statistics
+│   ├── Settings.tsx    # Settings
+│   └── Navigation.tsx  # Bottom Navigation
+├── hooks/          # Custom Hooks
+│   ├── useTimer.ts     # Timer Logic
+│   ├── useTasks.ts     # Task Management
+│   ├── useStats.ts     # Statistics
+│   ├── useTheme.ts     # Theme Management
+│   └── useLanguage.ts  # i18n Support
+├── types/          # TypeScript Types
+└── App.tsx         # Main App
 ```
 
-## 🛠️ 기술 스택
+## 🛠️ Tech Stack / 기술 스택
 
 - React 19
 - TypeScript
 - Vite
 - Chrome Extension Manifest V3
 
-## 📄 라이선스
+## 📄 License / 라이선스
 
 MIT License
