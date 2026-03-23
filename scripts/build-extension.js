@@ -12,6 +12,14 @@ fs.copyFileSync(
   path.join(distDir, 'manifest.json')
 );
 
+// Copy background.js, content.js, content.css
+['background.js', 'content.js', 'content.css'].forEach(file => {
+  const filePath = path.join(publicDir, file);
+  if (fs.existsSync(filePath)) {
+    fs.copyFileSync(filePath, path.join(distDir, file));
+  }
+});
+
 // Copy tomato images
 const tomatoImages = [
   'tomato-mascot.png',
