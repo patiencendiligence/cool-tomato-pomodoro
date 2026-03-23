@@ -20,7 +20,6 @@ function App() {
   
   const {
     tasks,
-    currentTask,
     currentTaskId,
     completedTasks,
     addTask,
@@ -74,35 +73,7 @@ function App() {
       margin: '0 auto',
       position: 'relative',
     }}>
-      <header style={{
-        padding: '16px',
-        textAlign: 'center',
-        backgroundColor: colors.surface,
-        borderBottom: `1px solid ${colors.border}`,
-      }}>
-        <h1 style={{ 
-          margin: 0, 
-          fontSize: '20px',
-          fontWeight: 'bold',
-          color: colors.primary,
-        }}>
-          🍅 {t.appName}
-        </h1>
-        {currentTask && activeTab === 'timer' && (
-          <div style={{
-            marginTop: '8px',
-            padding: '8px 12px',
-            backgroundColor: colors.primary + '15',
-            borderRadius: '20px',
-            fontSize: '13px',
-            color: colors.text,
-            display: 'inline-block',
-          }}>
-            📌 {currentTask.title}
-          </div>
-        )}
-      </header>
-
+     
       <main style={{ 
         flex: 1, 
         overflowY: 'auto',
