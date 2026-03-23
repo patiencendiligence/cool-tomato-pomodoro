@@ -79,7 +79,7 @@ function App() {
       <main style={{ 
         flex: 1, 
         overflowY: 'auto',
-        paddingBottom: '70px',
+        paddingBottom: activeTab === 'timer' ? '0' : '70px',
       }}>
         {activeTab === 'timer' && (
           <Timer
@@ -96,6 +96,8 @@ function App() {
             onModeChange={setMode}
             colors={colors}
             t={t}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
           />
         )}
         
@@ -136,12 +138,14 @@ function App() {
         )}
       </main>
 
-      <Navigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        colors={colors}
-        t={t}
-      />
+      {activeTab !== 'timer' && (
+        <Navigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          colors={colors}
+          t={t}
+        />
+      )}
     </div>
   );
 }
