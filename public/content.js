@@ -288,13 +288,24 @@
     }
   }
 
-  // Get tomato image based on current round in cycle
-  function getRoundTomatoImage() {
-    const currentRound = pomodorosCompleted % settings.longBreakInterval + 1;
-    if (currentRound === 1) return getResourceUrl('tomato-stage1.png');
-    if (currentRound === 2) return getResourceUrl('tomato-stage2.png');
-    if (currentRound === 3) return getResourceUrl('tomato-stage3.png');
-    return getResourceUrl('tomato-mascot.png'); // 4/4 완료
+  // Get tomato image based on timer progress (1/4, 2/4, 3/4, 4/4 of total time)
+  function getProgressTomatoImage() {
+    const totalTime = mode === 'work' 
+      ? settings.workDuration * 60 
+      : mode === 'shortBreak' 
+        ? settings.shortBreakDuration * 60 
+        : settings.longBreakDuration * 60;
+    const elapsed = totalTime - timeLeft;
+    const progress = elapsed / totalTime;
+    
+    // 시작 전이거나 0~25%: stage1
+    if (progress < 0.25) return getResourceUrl('tomato-stage1.png');
+    // 25%~50%: stage2
+    if (progress < 0.5) return getResourceUrl('tomato-stage2.png');
+    // 50%~75%: stage3
+    if (progress < 0.75) return getResourceUrl('tomato-stage3.png');
+    // 75%~100% (완료): mascot
+    return getResourceUrl('tomato-mascot.png');
   }
 
   function getExpandedTimerHTML() {
@@ -312,7 +323,7 @@
             </div>
           </div>
           <div class="expanded-content">
-            <img src="${getRoundTomatoImage()}" class="tomato-large bounce" alt="Tomato">
+            <img src="${getProgressTomatoImage()}" class="tomato-large bounce" alt="Tomato">
             <div class="status-badge-large ${modeColorClass}">
               ${getModeEmoji()} ${getModeLabel()}
             </div>
@@ -343,7 +354,7 @@
           <div class="expanded-footer">
             <button class="control-btn-large pause" id="btn-pause">⏸</button>
             <button class="control-btn-large skip" id="btn-skip">⏭</button>
-            <img src="${getRoundTomatoImage()}" class="tomato-footer bounce" alt="Tomato">
+            <img src="${getProgressTomatoImage()}" class="tomato-footer bounce" alt="Tomato">
           </div>
         </div>
       `;

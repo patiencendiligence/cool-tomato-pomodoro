@@ -52,12 +52,20 @@ export const Timer: React.FC<TimerProps> = ({
 
   const isFullTime = timeLeft === (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60);
 
-  // Get tomato image based on current round in cycle
+  // Get tomato image based on timer progress (1/4, 2/4, 3/4, 4/4 of total time)
   const getTomatoImage = () => {
-    if (pomodorosInCycle === 1) return '/tomato-stage1.png';
-    if (pomodorosInCycle === 2) return '/tomato-stage2.png';
-    if (pomodorosInCycle === 3) return '/tomato-stage3.png';
-    return '/tomato-mascot.png'; // 4/4 완료
+    const totalTime = mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60;
+    const elapsed = totalTime - timeLeft;
+    const progress = elapsed / totalTime;
+    
+    // 시작 전이거나 0~25%: stage1
+    if (progress < 0.25) return '/tomato-stage1.png';
+    // 25%~50%: stage2
+    if (progress < 0.5) return '/tomato-stage2.png';
+    // 50%~75%: stage3
+    if (progress < 0.75) return '/tomato-stage3.png';
+    // 75%~100% (완료): mascot
+    return '/tomato-mascot.png';
   };
 
   // Liquid Glass Style - color based on mode
