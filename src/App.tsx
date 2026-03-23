@@ -19,7 +19,7 @@ function App() {
   
   // Drag state for floating widget
   const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 20, y: 20 });
+  const [position, setPosition] = useState({ x: 50, y: 50 });
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
   const widgetRef = useRef<HTMLDivElement>(null);
 
@@ -125,13 +125,18 @@ function App() {
   ];
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      background: 'transparent',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
+    <>
+      {/* Full screen transparent background */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'transparent',
+        pointerEvents: 'none',
+      }} />
+      
       {/* Floating Widget */}
       <div 
         ref={widgetRef}
@@ -141,8 +146,8 @@ function App() {
           left: `${position.x}px`,
           top: `${position.y}px`,
           background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
-          borderRadius: '24px',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)',
+          borderRadius: '20px',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1)',
           cursor: isDragging ? 'grabbing' : 'grab',
           userSelect: isDragging ? 'none' : 'auto',
           display: 'flex',
@@ -150,15 +155,14 @@ function App() {
           alignItems: 'stretch',
           fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
           overflow: 'hidden',
-          zIndex: 9999,
+          zIndex: 99999,
+          pointerEvents: 'auto',
         }}
       >
         {/* Main Content Area */}
         <div style={{
-          padding: '16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
         }}>
           {activeTab === 'timer' && (
             <Timer
@@ -180,9 +184,10 @@ function App() {
           
           {activeTab === 'tasks' && (
             <div style={{ 
-              minWidth: '280px',
-              maxWidth: '320px',
-              maxHeight: '200px',
+              padding: '12px',
+              minWidth: '260px',
+              maxWidth: '300px',
+              maxHeight: '180px',
               overflowY: 'auto',
             }}>
               <TaskList
@@ -200,9 +205,10 @@ function App() {
           
           {activeTab === 'stats' && (
             <div style={{ 
-              minWidth: '280px',
-              maxWidth: '320px',
-              maxHeight: '200px',
+              padding: '12px',
+              minWidth: '260px',
+              maxWidth: '300px',
+              maxHeight: '180px',
               overflowY: 'auto',
             }}>
               <Stats
@@ -217,9 +223,10 @@ function App() {
           
           {activeTab === 'settings' && (
             <div style={{ 
-              minWidth: '280px',
-              maxWidth: '320px',
-              maxHeight: '200px',
+              padding: '12px',
+              minWidth: '260px',
+              maxWidth: '300px',
+              maxHeight: '180px',
               overflowY: 'auto',
             }}>
               <Settings
@@ -236,13 +243,13 @@ function App() {
           )}
         </div>
 
-        {/* Vertical Navigation - Always visible */}
+        {/* Vertical Navigation - Always visible on right */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          gap: '4px',
-          padding: '12px 8px',
+          gap: '6px',
+          padding: '10px 8px',
           borderLeft: '1px solid rgba(0,0,0,0.05)',
           background: 'rgba(255,255,255,0.5)',
         }}>
@@ -251,9 +258,9 @@ function App() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '10px',
+                width: '28px',
+                height: '28px',
+                borderRadius: '8px',
                 border: 'none',
                 background: activeTab === tab.id 
                   ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
@@ -274,7 +281,7 @@ function App() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

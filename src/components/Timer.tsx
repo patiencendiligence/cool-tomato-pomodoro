@@ -371,7 +371,7 @@ export const Timer: React.FC<TimerProps> = ({
               </button>
             </div>
 
-            {/* Mode Pills - Vertical Compact */}
+            {/* Expand + Mode Pills - Vertical */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -382,6 +382,27 @@ export const Timer: React.FC<TimerProps> = ({
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255,255,255,0.8)',
             }}>
+              {/* Expand Button */}
+              <button
+                onClick={() => setIsExpanded(true)}
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  border: 'none',
+                  borderRadius: '12px',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#666',
+                }}
+                title="Expand"
+              >
+                ⤢
+              </button>
+              {/* Mode Pills */}
               {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
                 <button
                   key={m}
@@ -573,31 +594,67 @@ export const Timer: React.FC<TimerProps> = ({
                 </button>
               </div>
             </div>
+
+            {/* Expand + Mode Pills - Vertical */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              padding: '4px',
+              borderRadius: '16px',
+              background: 'rgba(255,255,255,0.7)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.8)',
+            }}>
+              {/* Expand Button */}
+              <button
+                onClick={() => setIsExpanded(true)}
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  border: 'none',
+                  borderRadius: '12px',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#666',
+                }}
+                title="Expand"
+              >
+                ⤢
+              </button>
+              {/* Mode Pills */}
+              {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => onModeChange(m)}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    background: mode === m 
+                      ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
+                      : 'transparent',
+                    boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                    cursor: 'pointer',
+                    fontSize: '12px',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  title={m === 'work' ? t.work : m === 'shortBreak' ? t.shortBreak : t.longBreak}
+                >
+                  {m === 'work' ? '🍅' : m === 'shortBreak' ? '☕' : '🌴'}
+                </button>
+              ))}
+            </div>
           </>
         )}
-
-        {/* Expand Button */}
-        <button
-          onClick={() => setIsExpanded(true)}
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            background: 'rgba(255,255,255,0.6)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.8)',
-            color: '#666',
-            cursor: 'pointer',
-            fontSize: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginLeft: '4px',
-          }}
-          title="Expand"
-        >
-          ⤢
-        </button>
     </div>
   );
 };
