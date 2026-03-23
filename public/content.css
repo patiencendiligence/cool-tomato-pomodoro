@@ -814,8 +814,20 @@
 .expanded-footer {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 12px;
   padding-top: 20px;
+}
+
+.tomato-footer {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(231, 76, 60, 0.2));
+}
+
+.tomato-footer.bounce {
+  animation: bounce 1s ease-in-out infinite;
 }
 
 .play-btn-large {

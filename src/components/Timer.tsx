@@ -52,15 +52,12 @@ export const Timer: React.FC<TimerProps> = ({
 
   const isFullTime = timeLeft === (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60);
 
-  // Get tomato image based on timer progress
+  // Get tomato image based on current round in cycle
   const getTomatoImage = () => {
-    if (!isRunning) return '/tomato-mascot.png';
-    const totalTime = mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60;
-    const progress = 1 - (timeLeft / totalTime);
-    if (progress < 0.25) return '/tomato-stage1.png';
-    if (progress < 0.5) return '/tomato-stage2.png';
-    if (progress < 0.75) return '/tomato-stage3.png';
-    return '/tomato-mascot.png';
+    if (pomodorosInCycle === 1) return '/tomato-stage1.png';
+    if (pomodorosInCycle === 2) return '/tomato-stage2.png';
+    if (pomodorosInCycle === 3) return '/tomato-stage3.png';
+    return '/tomato-mascot.png'; // 4/4 완료
   };
 
   // Liquid Glass Style - color based on mode
@@ -181,7 +178,7 @@ export const Timer: React.FC<TimerProps> = ({
           }}>
             <div style={{ animation: 'bounce 1s ease-in-out infinite' }}>
               <img 
-                src="/tomato-mascot.png" 
+                src={getTomatoImage()} 
                 alt="Cool Tomato"
                 style={{
                   width: '140px',
@@ -270,7 +267,7 @@ export const Timer: React.FC<TimerProps> = ({
               ▶
             </button>
           ) : (
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
               <button
                 onClick={onPause}
                 style={{
@@ -302,6 +299,17 @@ export const Timer: React.FC<TimerProps> = ({
               >
                 ⏭
               </button>
+              <img 
+                src={getTomatoImage()} 
+                alt="Tomato"
+                style={{
+                  width: '70px',
+                  height: '70px',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 4px 8px rgba(231, 76, 60, 0.2))',
+                  animation: 'bounce 1s ease-in-out infinite',
+                }}
+              />
             </div>
           )}
         </div>
