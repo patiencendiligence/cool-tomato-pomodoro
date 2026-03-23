@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tomato body -->
+  <circle cx="24" cy="26.4" r="19.200000000000003" fill="#e74c3c"/>
+  <!-- Highlight -->
+  <ellipse cx="16.799999999999997" cy="19.200000000000003" rx="4.800000000000001" ry="3.84" fill="#ec7063" opacity="0.6"/>
+  <!-- Stem -->
+  <rect x="20.16" y="3.84" width="7.68" height="8.64" fill="#27ae60" rx="1.44"/>
+  <!-- Leaf -->
+  <path d="M24 7.199999999999999 Q33.599999999999994 2.4000000000000004 36 8.64" stroke="#27ae60" stroke-width="2.88" fill="none" stroke-linecap="round"/>
+</svg>
