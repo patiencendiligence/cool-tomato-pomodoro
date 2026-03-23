@@ -288,6 +288,15 @@
     }
   }
 
+  // Get tomato image based on current round in cycle
+  function getRoundTomatoImage() {
+    const currentRound = pomodorosCompleted % settings.longBreakInterval + 1;
+    if (currentRound === 1) return getResourceUrl('tomato-stage1.png');
+    if (currentRound === 2) return getResourceUrl('tomato-stage2.png');
+    if (currentRound === 3) return getResourceUrl('tomato-stage3.png');
+    return getResourceUrl('tomato-mascot.png'); // 4/4 완료
+  }
+
   function getExpandedTimerHTML() {
     const modeColorClass = mode === 'work' ? 'mode-work' : 'mode-break';
     
@@ -303,7 +312,7 @@
             </div>
           </div>
           <div class="expanded-content">
-            <img src="${getResourceUrl('tomato-mascot.png')}" class="tomato-large bounce" alt="Tomato">
+            <img src="${getRoundTomatoImage()}" class="tomato-large bounce" alt="Tomato">
             <div class="status-badge-large ${modeColorClass}">
               ${getModeEmoji()} ${getModeLabel()}
             </div>
@@ -334,6 +343,7 @@
           <div class="expanded-footer">
             <button class="control-btn-large pause" id="btn-pause">⏸</button>
             <button class="control-btn-large skip" id="btn-skip">⏭</button>
+            <img src="${getRoundTomatoImage()}" class="tomato-footer bounce" alt="Tomato">
           </div>
         </div>
       `;
