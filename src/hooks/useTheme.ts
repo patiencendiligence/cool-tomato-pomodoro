@@ -25,8 +25,8 @@ const themes = {
     breakBg: '#27ae60',
   },
   dark: {
-    background: '#1a1a2e',
-    surface: '#16213e',
+    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)',
+    surface: 'rgba(22, 33, 62, 0.8)',
     primary: '#e74c3c',
     primaryHover: '#c0392b',
     secondary: '#27ae60',
