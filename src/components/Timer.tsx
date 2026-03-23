@@ -639,6 +639,29 @@ export const Timer: React.FC<TimerProps> = ({
           </button>
         ))}
       </div>
+
+      {/* Expand Button */}
+      <button
+        onClick={() => setIsExpanded(true)}
+        style={{
+          width: `${NAV_ICON_SIZE}px`,
+          height: `${NAV_ICON_SIZE}px`,
+          borderRadius: '8px',
+          background: 'rgba(255,255,255,0.6)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.8)',
+          color: '#666',
+          cursor: 'pointer',
+          fontSize: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginLeft: '4px',
+        }}
+        title="Expand"
+      >
+        ⤢
+      </button>
     </div>
   );
 };
