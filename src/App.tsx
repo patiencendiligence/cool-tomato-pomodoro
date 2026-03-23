@@ -8,7 +8,6 @@ import { Timer } from './components/Timer';
 import { TaskList } from './components/TaskList';
 import { Stats } from './components/Stats';
 import { Settings } from './components/Settings';
-import { Navigation } from './components/Navigation';
 import type { TimerMode } from './types';
 
 type Tab = 'timer' | 'tasks' | 'stats' | 'settings';
@@ -18,13 +17,15 @@ function App() {
   const { theme, setTheme, colors } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   
-  // Drag state
+  // Drag state for floating widget
   const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 20, y: 20 });
   const dragRef = useRef<{ startX: number; startY: number; initialX: number; initialY: number } | null>(null);
+  const widgetRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('button, input, select, textarea')) return;
+    if ((e.target as HTMLElement).closest('button, input, select, textarea, a')) return;
+    e.preventDefault();
     setIsDragging(true);
     dragRef.current = {
       startX: e.clientX,
@@ -39,10 +40,21 @@ function App() {
       if (!isDragging || !dragRef.current) return;
       const dx = e.clientX - dragRef.current.startX;
       const dy = e.clientY - dragRef.current.startY;
-      setPosition({
-        x: dragRef.current.initialX + dx,
-        y: dragRef.current.initialY + dy,
-      });
+      
+      let newX = dragRef.current.initialX + dx;
+      let newY = dragRef.current.initialY + dy;
+      
+      // Keep within viewport bounds
+      const widget = widgetRef.current;
+      if (widget) {
+        const rect = widget.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+        newX = Math.max(0, Math.min(newX, maxX));
+        newY = Math.max(0, Math.min(newY, maxY));
+      }
+      
+      setPosition({ x: newX, y: newY });
     };
 
     const handleMouseUp = () => {
@@ -104,99 +116,164 @@ function App() {
     (t) => t.completedAt && t.completedAt.startsWith(new Date().toISOString().split('T')[0])
   ).length;
 
-  return (
-    <div 
-      onMouseDown={handleMouseDown}
-      style={{
-        minHeight: activeTab === 'timer' ? 'auto' : '100vh',
-        background: activeTab === 'timer' 
-          ? 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 50%, #e8e8f0 100%)'
-          : colors.background,
-        color: colors.text,
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
-        maxWidth: activeTab === 'timer' ? 'fit-content' : '420px',
-        margin: '0 auto',
-        position: 'relative',
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        cursor: isDragging ? 'grabbing' : (activeTab === 'timer' ? 'grab' : 'default'),
-        userSelect: isDragging ? 'none' : 'auto',
-        borderRadius: activeTab === 'timer' ? '24px' : '0',
-        boxShadow: activeTab === 'timer' ? '0 8px 32px rgba(0,0,0,0.1)' : 'none',
-        overflow: 'hidden',
-      }}>
-     
-      <main style={{ 
-        flex: 1, 
-        overflowY: 'auto',
-        paddingBottom: activeTab === 'timer' ? '0' : '70px',
-      }}>
-        {activeTab === 'timer' && (
-          <Timer
-            mode={mode}
-            timeLeft={timeLeft}
-            isRunning={isRunning}
-            pomodorosInCycle={pomodorosInCycle}
-            totalPomodoros={totalPomodoros}
-            longBreakInterval={settings.longBreakInterval}
-            onStart={start}
-            onPause={pause}
-            onResume={resume}
-            onSkip={skip}
-            onModeChange={setMode}
-            colors={colors}
-            t={t}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
-        )}
-        
-        {activeTab === 'tasks' && (
-          <TaskList
-            tasks={tasks}
-            currentTaskId={currentTaskId}
-            onSelectTask={selectTask}
-            onAddTask={addTask}
-            onDeleteTask={deleteTask}
-            onCompleteTask={completeTask}
-            colors={colors}
-            t={t}
-          />
-        )}
-        
-        {activeTab === 'stats' && (
-          <Stats
-            todayStats={todayStats}
-            weeklyStats={weeklyStats}
-            tasksCompleted={todayCompleted}
-            colors={colors}
-            t={t}
-          />
-        )}
-        
-        {activeTab === 'settings' && (
-          <Settings
-            settings={settings}
-            theme={theme}
-            language={language}
-            onUpdateSettings={updateSettings}
-            onSetTheme={setTheme}
-            onSetLanguage={setLanguage}
-            colors={colors}
-            t={t}
-          />
-        )}
-      </main>
+  // Navigation tabs
+  const navTabs: { id: Tab; icon: string }[] = [
+    { id: 'timer', icon: '⏱️' },
+    { id: 'tasks', icon: '✅' },
+    { id: 'stats', icon: '📊' },
+    { id: 'settings', icon: '⚙️' },
+  ];
 
-      {activeTab !== 'timer' && (
-        <Navigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          colors={colors}
-          t={t}
-        />
-      )}
+  return (
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      background: 'transparent',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Floating Widget */}
+      <div 
+        ref={widgetRef}
+        onMouseDown={handleMouseDown}
+        style={{
+          position: 'fixed',
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+          background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
+          borderRadius: '24px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.1)',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          userSelect: isDragging ? 'none' : 'auto',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'stretch',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif',
+          overflow: 'hidden',
+          zIndex: 9999,
+        }}
+      >
+        {/* Main Content Area */}
+        <div style={{
+          padding: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+        }}>
+          {activeTab === 'timer' && (
+            <Timer
+              mode={mode}
+              timeLeft={timeLeft}
+              isRunning={isRunning}
+              pomodorosInCycle={pomodorosInCycle}
+              totalPomodoros={totalPomodoros}
+              longBreakInterval={settings.longBreakInterval}
+              onStart={start}
+              onPause={pause}
+              onResume={resume}
+              onSkip={skip}
+              onModeChange={setMode}
+              colors={colors}
+              t={t}
+            />
+          )}
+          
+          {activeTab === 'tasks' && (
+            <div style={{ 
+              minWidth: '280px',
+              maxWidth: '320px',
+              maxHeight: '200px',
+              overflowY: 'auto',
+            }}>
+              <TaskList
+                tasks={tasks}
+                currentTaskId={currentTaskId}
+                onSelectTask={selectTask}
+                onAddTask={addTask}
+                onDeleteTask={deleteTask}
+                onCompleteTask={completeTask}
+                colors={colors}
+                t={t}
+              />
+            </div>
+          )}
+          
+          {activeTab === 'stats' && (
+            <div style={{ 
+              minWidth: '280px',
+              maxWidth: '320px',
+              maxHeight: '200px',
+              overflowY: 'auto',
+            }}>
+              <Stats
+                todayStats={todayStats}
+                weeklyStats={weeklyStats}
+                tasksCompleted={todayCompleted}
+                colors={colors}
+                t={t}
+              />
+            </div>
+          )}
+          
+          {activeTab === 'settings' && (
+            <div style={{ 
+              minWidth: '280px',
+              maxWidth: '320px',
+              maxHeight: '200px',
+              overflowY: 'auto',
+            }}>
+              <Settings
+                settings={settings}
+                theme={theme}
+                language={language}
+                onUpdateSettings={updateSettings}
+                onSetTheme={setTheme}
+                onSetLanguage={setLanguage}
+                colors={colors}
+                t={t}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Vertical Navigation - Always visible */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: '4px',
+          padding: '12px 8px',
+          borderLeft: '1px solid rgba(0,0,0,0.05)',
+          background: 'rgba(255,255,255,0.5)',
+        }}>
+          {navTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '10px',
+                border: 'none',
+                background: activeTab === tab.id 
+                  ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
+                  : 'transparent',
+                boxShadow: activeTab === tab.id 
+                  ? '0 2px 8px rgba(0,0,0,0.1)' 
+                  : 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {tab.icon}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
