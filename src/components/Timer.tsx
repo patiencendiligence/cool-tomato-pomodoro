@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { TimerMode } from '../types';
 import type { Translations } from '../hooks/useLanguage';
 
+type Tab = 'timer' | 'tasks' | 'stats' | 'settings';
+
 interface TimerProps {
   mode: TimerMode;
   timeLeft: number;
@@ -16,6 +18,8 @@ interface TimerProps {
   onModeChange: (mode: TimerMode) => void;
   colors: Record<string, string>;
   t: Translations;
+  activeTab: Tab;
+  onTabChange: (tab: Tab) => void;
 }
 
 export const Timer: React.FC<TimerProps> = ({
@@ -31,6 +35,8 @@ export const Timer: React.FC<TimerProps> = ({
   onSkip,
   onModeChange,
   t,
+  activeTab,
+  onTabChange,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -298,313 +304,94 @@ export const Timer: React.FC<TimerProps> = ({
     );
   }
 
+  // Navigation tabs for compact view
+  const navTabs: { id: Tab; icon: string }[] = [
+    { id: 'timer', icon: '⏱️' },
+    { id: 'tasks', icon: '✅' },
+    { id: 'stats', icon: '📊' },
+    { id: 'settings', icon: '⚙️' },
+  ];
+
   // Compact view - True Liquid Glass Style
   return (
     <div 
       style={{ 
         display: 'flex', 
-        flexDirection: 'column', 
+        flexDirection: 'row',
         alignItems: 'center', 
         justifyContent: 'center',
         padding: '40px 20px',
         position: 'relative',
         background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
         minHeight: '100%',
+        gap: '20px',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Paused/Stopped State - Only Tomato */}
-      {!isRunning ? (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          {/* Bouncing Tomato */}
-          <div 
-            style={{
-              animation: 'bounce 1s ease-in-out infinite',
-              cursor: 'pointer',
-            }}
-            onClick={isFullTime ? onStart : onResume}
-          >
-            <img 
-              src="/tomato-mascot.png" 
-              alt="Cool Tomato"
-              style={{
-                width: '160px',
-                height: '160px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 16px 32px rgba(231, 76, 60, 0.25))',
-              }}
-            />
-          </div>
-
-          {/* Play Button */}
-          <button
-            onClick={isFullTime ? onStart : onResume}
-            style={{
-              marginTop: '32px',
-              width: '64px',
-              height: '64px',
-              borderRadius: '32px',
-              fontSize: '24px',
-              background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
-              color: '#fff',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            ▶
-          </button>
-
-          {/* Mode Pills - Always visible when paused */}
+      {/* Main Content Area */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        {/* Paused/Stopped State - Only Tomato */}
+        {!isRunning ? (
           <div style={{
             display: 'flex',
-            gap: '6px',
-            padding: '6px',
-            marginTop: '24px',
-            borderRadius: '28px',
-            background: 'rgba(255,255,255,0.7)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.8)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-          }}>
-            {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => onModeChange(m)}
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  border: 'none',
-                  borderRadius: '20px',
-                  background: mode === m 
-                    ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
-                    : 'transparent',
-                  boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                title={m === 'work' ? t.work : m === 'shortBreak' ? t.shortBreak : t.longBreak}
-              >
-                {m === 'work' ? '🍅' : m === 'shortBreak' ? '☕' : '🌴'}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : (
-        /* Running State - Only Timer */
-        <>
-          {/* Liquid Glass Timer Container */}
-          <div
-            style={{
-              ...liquidGlassStyle,
-              padding: '28px 24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-              transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-              position: 'relative',
-              overflow: 'visible',
-            }}
-          >
-            {/* Status Badge - Liquid Glass Pill */}
-            <div style={{
-              position: 'absolute',
-              top: '-14px',
-              right: '16px',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              background: mode === 'work'
-                ? 'linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%)'
-                : mode === 'shortBreak'
-                ? 'linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(39, 174, 96, 0.1) 100%)'
-                : 'linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%)',
-              backdropFilter: 'blur(20px)',
-              border: `1px solid ${mode === 'work' ? 'rgba(231, 76, 60, 0.3)' : 'rgba(39, 174, 96, 0.3)'}`,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-            }}>
-              <span style={{ fontSize: '13px' }}>{getStatusEmoji()}</span>
-              <span style={{ 
-                color: mode === 'work' ? '#c0392b' : '#1e8449', 
-                fontSize: '12px', 
-                fontWeight: '600',
-                letterSpacing: '0.3px',
-              }}>
-                {getStatusLabel()}
-              </span>
-            </div>
-
-            {/* Progress bar - Liquid style */}
-            <div style={{
-              position: 'absolute',
-              bottom: '8px',
-              left: '16px',
-              right: '16px',
-              height: '4px',
-              borderRadius: '2px',
-              background: 'rgba(0,0,0,0.05)',
-              overflow: 'hidden',
-            }}>
-              <div style={{
-                height: '100%',
-                width: `${((mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) - timeLeft) / (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) * 100}%`,
-                background: `linear-gradient(90deg, rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.8), rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.5))`,
-                borderRadius: '2px',
-                transition: 'width 1s linear',
-              }} />
-            </div>
-
-            {/* Time Display */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-            }}>
-              <div style={{ textAlign: 'center' }}>
-                <span style={{
-                  fontSize: '52px',
-                  fontWeight: '300',
-                  color: '#1a1a1a',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                  letterSpacing: '-2px',
-                  lineHeight: 1,
-                }}>
-                  {String(minutes).padStart(2, '0')}
-                </span>
-                <div style={{
-                  fontSize: '11px',
-                  color: 'rgba(0,0,0,0.4)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  marginTop: '6px',
-                }}>
-                  {t.minutes}
-                </div>
-              </div>
-
-              {/* Divider - Liquid Glass */}
-              <div style={{
-                width: '2px',
-                height: '40px',
-                background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
-                borderRadius: '1px',
-              }} />
-
-              <div style={{ textAlign: 'center' }}>
-                <span style={{
-                  fontSize: '52px',
-                  fontWeight: '300',
-                  color: '#1a1a1a',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                  letterSpacing: '-2px',
-                  lineHeight: 1,
-                }}>
-                  {String(seconds).padStart(2, '0')}
-                </span>
-                <div style={{
-                  fontSize: '11px',
-                  color: 'rgba(0,0,0,0.4)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '1px',
-                  marginTop: '6px',
-                }}>
-                  {t.seconds}
-                </div>
-              </div>
-            </div>
-
-            {/* Hover Controls - Liquid Glass Overlay */}
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(255, 255, 255, 0.85)',
-              backdropFilter: 'blur(20px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '16px',
-              opacity: isHovered ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              pointerEvents: isHovered ? 'auto' : 'none',
-              borderRadius: '32px',
-            }}>
-              <button
-                onClick={onPause}
-                style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '26px',
-                  fontSize: '18px',
-                  background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
-                  color: '#fff',
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                ⏸
-              </button>
-              <button
-                onClick={onSkip}
-                style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '22px',
-                  fontSize: '14px',
-                  background: 'rgba(255,255,255,0.9)',
-                  color: '#333',
-                  border: '1px solid rgba(0,0,0,0.1)',
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(10px)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                ⏭
-              </button>
-            </div>
-          </div>
-
-          {/* Bottom Controls - Liquid Glass Pills (hover only) */}
-          <div style={{ 
-            display: 'flex', 
+            flexDirection: 'column',
             alignItems: 'center',
-            gap: '10px',
-            marginTop: '28px',
-            opacity: isHovered ? 1 : 0,
-            transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
-            transition: 'all 0.3s ease',
-            pointerEvents: isHovered ? 'auto' : 'none',
+            justifyContent: 'center',
           }}>
-            {/* Mode Pills */}
+            {/* Bouncing Tomato */}
+            <div 
+              style={{
+                animation: 'bounce 1s ease-in-out infinite',
+                cursor: 'pointer',
+              }}
+              onClick={isFullTime ? onStart : onResume}
+            >
+              <img 
+                src="/tomato-mascot.png" 
+                alt="Cool Tomato"
+                style={{
+                  width: '160px',
+                  height: '160px',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 16px 32px rgba(231, 76, 60, 0.25))',
+                }}
+              />
+            </div>
+
+            {/* Play Button */}
+            <button
+              onClick={isFullTime ? onStart : onResume}
+              style={{
+                marginTop: '32px',
+                width: '64px',
+                height: '64px',
+                borderRadius: '32px',
+                fontSize: '24px',
+                background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
+                color: '#fff',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              ▶
+            </button>
+
+            {/* Mode Pills - Always visible when paused */}
             <div style={{
               display: 'flex',
               gap: '6px',
               padding: '6px',
+              marginTop: '24px',
               borderRadius: '28px',
               background: 'rgba(255,255,255,0.7)',
               backdropFilter: 'blur(20px)',
@@ -637,85 +424,308 @@ export const Timer: React.FC<TimerProps> = ({
                 </button>
               ))}
             </div>
-
-            {/* Expand Button */}
-            <button
-              onClick={() => setIsExpanded(true)}
+          </div>
+        ) : (
+          /* Running State - Only Timer */
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
+            {/* Liquid Glass Timer Container */}
+            <div
               style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '20px',
-                background: 'rgba(255,255,255,0.7)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.8)',
-                color: '#666',
-                cursor: 'pointer',
-                fontSize: '16px',
+                ...liquidGlassStyle,
+                padding: '28px 24px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                cursor: 'pointer',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                position: 'relative',
+                overflow: 'visible',
               }}
-              title="Expand"
             >
-              ⤢
-            </button>
-          </div>
+              {/* Status Badge - Liquid Glass Pill */}
+              <div style={{
+                position: 'absolute',
+                top: '-14px',
+                right: '16px',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                background: mode === 'work'
+                  ? 'linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(231, 76, 60, 0.1) 100%)'
+                  : mode === 'shortBreak'
+                  ? 'linear-gradient(135deg, rgba(39, 174, 96, 0.2) 0%, rgba(39, 174, 96, 0.1) 100%)'
+                  : 'linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(46, 204, 113, 0.1) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: `1px solid ${mode === 'work' ? 'rgba(231, 76, 60, 0.3)' : 'rgba(39, 174, 96, 0.3)'}`,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+              }}>
+                <span style={{ fontSize: '13px' }}>{getStatusEmoji()}</span>
+                <span style={{ 
+                  color: mode === 'work' ? '#c0392b' : '#1e8449', 
+                  fontSize: '12px', 
+                  fontWeight: '600',
+                  letterSpacing: '0.3px',
+                }}>
+                  {getStatusLabel()}
+                </span>
+              </div>
 
-          {/* Stats Row - Liquid Glass */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '16px',
-            marginTop: isHovered ? '20px' : '28px',
-            padding: '12px 20px',
-            borderRadius: '24px',
-            background: 'rgba(255,255,255,0.6)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.8)',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.04)',
-            transition: 'margin-top 0.3s ease',
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}>
-              <span style={{ fontSize: '14px' }}>🔄</span>
-              <span style={{ color: 'rgba(0,0,0,0.4)', fontSize: '12px' }}>{t.round}</span>
-              <span style={{ 
-                color: '#1a1a1a', 
-                fontWeight: '600',
-                fontSize: '13px',
+              {/* Progress bar - Liquid style */}
+              <div style={{
+                position: 'absolute',
+                bottom: '8px',
+                left: '16px',
+                right: '16px',
+                height: '4px',
+                borderRadius: '2px',
+                background: 'rgba(0,0,0,0.05)',
+                overflow: 'hidden',
               }}>
-                {pomodorosInCycle}/{longBreakInterval}
-              </span>
+                <div style={{
+                  height: '100%',
+                  width: `${((mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) - timeLeft) / (mode === 'work' ? 25 * 60 : mode === 'shortBreak' ? 5 * 60 : 20 * 60) * 100}%`,
+                  background: `linear-gradient(90deg, rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.8), rgba(${modeColor.r}, ${modeColor.g}, ${modeColor.b}, 0.5))`,
+                  borderRadius: '2px',
+                  transition: 'width 1s linear',
+                }} />
+              </div>
+
+              {/* Time Display */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+              }}>
+                <div style={{ textAlign: 'center' }}>
+                  <span style={{
+                    fontSize: '52px',
+                    fontWeight: '300',
+                    color: '#1a1a1a',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                    letterSpacing: '-2px',
+                    lineHeight: 1,
+                  }}>
+                    {String(minutes).padStart(2, '0')}
+                  </span>
+                  <div style={{
+                    fontSize: '11px',
+                    color: 'rgba(0,0,0,0.4)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    marginTop: '6px',
+                  }}>
+                    {t.minutes}
+                  </div>
+                </div>
+
+                {/* Divider - Liquid Glass */}
+                <div style={{
+                  width: '2px',
+                  height: '40px',
+                  background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
+                  borderRadius: '1px',
+                }} />
+
+                <div style={{ textAlign: 'center' }}>
+                  <span style={{
+                    fontSize: '52px',
+                    fontWeight: '300',
+                    color: '#1a1a1a',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                    letterSpacing: '-2px',
+                    lineHeight: 1,
+                  }}>
+                    {String(seconds).padStart(2, '0')}
+                  </span>
+                  <div style={{
+                    fontSize: '11px',
+                    color: 'rgba(0,0,0,0.4)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    marginTop: '6px',
+                  }}>
+                    {t.seconds}
+                  </div>
+                </div>
+              </div>
+
+              {/* Hover Controls - Liquid Glass Overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(20px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '16px',
+                opacity: isHovered ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                pointerEvents: isHovered ? 'auto' : 'none',
+                borderRadius: '32px',
+              }}>
+                <button
+                  onClick={onPause}
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '26px',
+                    fontSize: '18px',
+                    background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
+                    color: '#fff',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  ⏸
+                </button>
+                <button
+                  onClick={onSkip}
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '22px',
+                    fontSize: '14px',
+                    background: 'rgba(255,255,255,0.9)',
+                    color: '#333',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    cursor: 'pointer',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  ⏭
+                </button>
+              </div>
             </div>
-            
-            <div style={{
-              width: '1px',
-              height: '16px',
-              background: 'rgba(0,0,0,0.1)',
-            }} />
-            
-            <div style={{
-              display: 'flex',
+
+            {/* Bottom Controls - Mode Pills (hover only) */}
+            <div style={{ 
+              display: 'flex', 
               alignItems: 'center',
-              gap: '6px',
+              gap: '10px',
+              marginTop: '28px',
+              opacity: isHovered ? 1 : 0,
+              transform: isHovered ? 'translateY(0)' : 'translateY(8px)',
+              transition: 'all 0.3s ease',
+              pointerEvents: isHovered ? 'auto' : 'none',
             }}>
-              <span style={{ fontSize: '14px' }}>🍅</span>
-              <span style={{ color: 'rgba(0,0,0,0.4)', fontSize: '12px' }}>{t.totalPomodoros}</span>
-              <span style={{ 
-                color: '#1a1a1a', 
-                fontWeight: '600',
-                fontSize: '13px',
+              {/* Mode Pills */}
+              <div style={{
+                display: 'flex',
+                gap: '6px',
+                padding: '6px',
+                borderRadius: '28px',
+                background: 'rgba(255,255,255,0.7)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255,255,255,0.8)',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
               }}>
-                {totalPomodoros}
-              </span>
+                {(['work', 'shortBreak', 'longBreak'] as TimerMode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => onModeChange(m)}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      border: 'none',
+                      borderRadius: '20px',
+                      background: mode === m 
+                        ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
+                        : 'transparent',
+                      boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+                      cursor: 'pointer',
+                      fontSize: '16px',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    title={m === 'work' ? t.work : m === 'shortBreak' ? t.shortBreak : t.longBreak}
+                  >
+                    {m === 'work' ? '🍅' : m === 'shortBreak' ? '☕' : '🌴'}
+                  </button>
+                ))}
+              </div>
+
+              {/* Expand Button */}
+              <button
+                onClick={() => setIsExpanded(true)}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '20px',
+                  background: 'rgba(255,255,255,0.7)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255,255,255,0.8)',
+                  color: '#666',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                }}
+                title="Expand"
+              >
+                ⤢
+              </button>
             </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
+
+      {/* Vertical Navigation - Right Side */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}>
+        {navTabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => onTabChange(tab.id)}
+            style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '16px',
+              border: 'none',
+              background: activeTab === tab.id 
+                ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
+                : 'rgba(255,255,255,0.4)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: activeTab === tab.id 
+                ? '0 4px 16px rgba(0,0,0,0.1)' 
+                : '0 2px 8px rgba(0,0,0,0.04)',
+              cursor: 'pointer',
+              fontSize: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s ease',
+              transform: activeTab === tab.id ? 'scale(1.05)' : 'scale(1)',
+            }}
+          >
+            {tab.icon}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
