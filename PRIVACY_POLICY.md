@@ -80,10 +80,45 @@
 | `storage` | 타이머 설정, 업무 목록, 통계 데이터를 로컬에 저장 |
 | `notifications` | 타이머 완료 시 알림 표시 |
 | `alarms` | 백그라운드에서 타이머 관리 |
+| `호스트 권한 (<all_urls>)` | 모든 웹페이지에서 플로팅 위젯 표시 |
 
 ---
 
-## 7.1 Storage 권한 사용 근거 (Justification for Storage Permission)
+## 7.1 호스트 권한 사용 근거 (Justification for Host Permissions)
+
+### 왜 호스트 권한이 필요한가요?
+
+본 확장 프로그램은 **플로팅 위젯** 형태로 동작하며, 사용자가 어떤 웹사이트를 방문하든 타이머를 사용할 수 있어야 합니다.
+
+### 호스트 권한의 실제 사용 목적
+
+| 기능 | 설명 |
+|------|------|
+| **플로팅 위젯 표시** | 모든 웹페이지 위에 포모도로 타이머 위젯을 오버레이로 표시 |
+| **어디서든 사용 가능** | 사용자가 작업 중인 모든 사이트에서 타이머 접근 가능 |
+
+### 호스트 권한이 하지 않는 것
+
+- ❌ 웹페이지의 **콘텐츠를 읽지 않습니다**
+- ❌ 사용자의 **브라우징 기록을 추적하지 않습니다**
+- ❌ 페이지의 **데이터를 수집하거나 전송하지 않습니다**
+- ❌ 웹페이지를 **수정하거나 변경하지 않습니다** (위젯 UI 오버레이 제외)
+
+### 기술적 구현
+
+```
+content_scripts: {
+  "matches": ["<all_urls>"],
+  "js": ["content.js"],
+  "css": ["content.css"]
+}
+```
+
+이 설정은 단순히 타이머 위젯 UI를 페이지 위에 표시하기 위한 것이며, 페이지 내용과는 완전히 독립적으로 동작합니다.
+
+---
+
+## 7.2 Storage 권한 사용 근거 (Justification for Storage Permission)
 
 ### 왜 Storage 권한이 필요한가요?
 
@@ -234,10 +269,45 @@ Users can at any time:
 | `storage` | Store timer settings, task list, and statistics locally |
 | `notifications` | Display notifications when timer completes |
 | `alarms` | Manage timer in background |
+| `Host Permissions (<all_urls>)` | Display floating widget on all webpages |
 
 ---
 
-## 7.1 Justification for Storage Permission
+## 7.1 Justification for Host Permissions
+
+### Why are Host Permissions Required?
+
+This extension operates as a **floating widget** that needs to be accessible on any website the user visits.
+
+### Actual Use of Host Permissions
+
+| Feature | Description |
+|---------|-------------|
+| **Floating Widget Display** | Show Pomodoro timer widget as an overlay on all webpages |
+| **Universal Access** | Timer accessible on any site where the user is working |
+
+### What Host Permissions Do NOT Do
+
+- ❌ Does **NOT read** webpage content
+- ❌ Does **NOT track** browsing history
+- ❌ Does **NOT collect or transmit** page data
+- ❌ Does **NOT modify** webpages (except for widget UI overlay)
+
+### Technical Implementation
+
+```
+content_scripts: {
+  "matches": ["<all_urls>"],
+  "js": ["content.js"],
+  "css": ["content.css"]
+}
+```
+
+This configuration is solely for displaying the timer widget UI on top of pages and operates completely independently of page content.
+
+---
+
+## 7.2 Justification for Storage Permission
 
 ### Why is the Storage Permission Required?
 
