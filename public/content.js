@@ -350,7 +350,7 @@
 
     const addFormHTML = showAddForm ? `
       <div class="add-task-form">
-        <input type="text" id="new-task-title" placeholder="${t('taskTitle')}" class="task-input">
+        <input type="text" id="new-task-title" placeholder="${t('taskTitle')}" class="task-input" autocomplete="off">
         <div class="form-row">
           <label>🍅</label>
           <input type="number" id="new-task-pomos" value="1" min="1" max="10" class="pomo-input">
@@ -361,8 +361,8 @@
           </select>
         </div>
         <div class="form-actions">
-          <button class="btn-cancel" id="btn-cancel-task">${t('cancel')}</button>
-          <button class="btn-save" id="btn-save-task">${t('save')}</button>
+          <button type="button" class="btn-cancel" id="btn-cancel-task">${t('cancel')}</button>
+          <button type="button" class="btn-save" id="btn-save-task">${t('save')}</button>
         </div>
       </div>
     ` : '';
@@ -567,13 +567,33 @@
 
   function setupTaskListeners() {
     const showAddBtn = document.getElementById('btn-show-add');
-    if (showAddBtn) showAddBtn.addEventListener('click', () => { showAddForm = true; render(); });
+    if (showAddBtn) {
+      showAddBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showAddForm = true;
+        render();
+      });
+    }
 
     const cancelBtn = document.getElementById('btn-cancel-task');
-    if (cancelBtn) cancelBtn.addEventListener('click', () => { showAddForm = false; render(); });
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showAddForm = false;
+        render();
+      });
+    }
 
     const saveBtn = document.getElementById('btn-save-task');
-    if (saveBtn) saveBtn.addEventListener('click', addTask);
+    if (saveBtn) {
+      saveBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addTask();
+      });
+    }
 
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => { taskFilter = btn.dataset.filter; render(); });
