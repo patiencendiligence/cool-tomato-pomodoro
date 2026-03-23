@@ -90,9 +90,12 @@ export const TaskList: React.FC<TaskListProps> = ({
                 border: 'none',
                 borderRadius: '16px',
                 backgroundColor: filter === f ? colors.primary : colors.buttonBg,
-                color: filter === f ? '#fff' : colors.text,
+                color: filter === f 
+                  ? (colors.primary === '#ffffff' ? '#e74c3c' : '#fff')
+                  : colors.text,
                 fontSize: '12px',
                 cursor: 'pointer',
+                fontWeight: filter === f ? '600' : '400',
               }}
             >
               {f === 'active' ? t.inProgress : f === 'completed' ? t.completed : t.allTasks}
@@ -104,7 +107,7 @@ export const TaskList: React.FC<TaskListProps> = ({
           style={{
             padding: '8px 16px',
             backgroundColor: colors.primary,
-            color: '#fff',
+            color: colors.primary === '#ffffff' ? '#e74c3c' : '#fff',
             border: 'none',
             borderRadius: '20px',
             cursor: 'pointer',
@@ -218,7 +221,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               style={{
                 padding: '8px 16px',
                 backgroundColor: colors.primary,
-                color: '#fff',
+                color: colors.primary === '#ffffff' ? '#e74c3c' : '#fff',
                 border: 'none',
                 borderRadius: '6px',
                 cursor: 'pointer',

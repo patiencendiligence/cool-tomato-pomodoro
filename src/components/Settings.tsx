@@ -247,12 +247,16 @@ export const Settings: React.FC<SettingsProps> = ({
                 onClick={() => onSetTheme(th)}
                 style={{
                   padding: '6px 12px',
-                  border: theme === th ? `2px solid ${colors.primary}` : `1px solid ${colors.border}`,
+                  border: theme === th 
+                    ? `2px solid ${colors.primary === '#ffffff' ? '#fff' : colors.primary}` 
+                    : `1px solid ${colors.border}`,
                   borderRadius: '6px',
                   backgroundColor: th === 'light' ? '#f5f5f5' : th === 'dark' ? '#1a1a2e' : '#ff6347',
                   color: th === 'light' ? '#333' : '#fff',
                   cursor: 'pointer',
                   fontSize: '12px',
+                  fontWeight: theme === th ? '600' : '400',
+                  boxShadow: theme === th ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
                 }}
               >
                 {th === 'light' ? t.lightTheme : th === 'dark' ? t.darkTheme : t.tomatoTheme}
@@ -272,9 +276,12 @@ export const Settings: React.FC<SettingsProps> = ({
                   border: language === lang ? `2px solid ${colors.primary}` : `1px solid ${colors.border}`,
                   borderRadius: '6px',
                   backgroundColor: language === lang ? colors.primary : colors.buttonBg,
-                  color: language === lang ? '#fff' : colors.text,
+                  color: language === lang 
+                    ? (colors.primary === '#ffffff' ? '#e74c3c' : '#fff')
+                    : colors.text,
                   cursor: 'pointer',
                   fontSize: '12px',
+                  fontWeight: language === lang ? '600' : '400',
                 }}
               >
                 {lang === 'ko' ? '한국어' : 'English'}
