@@ -83,6 +83,50 @@
 
 ---
 
+## 7.1 Storage 권한 사용 근거 (Justification for Storage Permission)
+
+### 왜 Storage 권한이 필요한가요?
+
+본 확장 프로그램은 포모도로 타이머 기능을 제공하기 위해 `chrome.storage.local` API를 사용합니다. 이 권한은 다음과 같은 **핵심 기능**을 위해 반드시 필요합니다:
+
+### 저장되는 데이터 상세 목록
+
+| 데이터 | 목적 | 필요성 |
+|--------|------|--------|
+| **타이머 설정** | 집중 시간(기본 25분), 짧은 휴식(5분), 긴 휴식(20분), 긴 휴식 간격 설정 저장 | 사용자가 매번 설정을 다시 입력하지 않아도 되도록 함 |
+| **업무/태스크 목록** | 사용자가 추가한 업무 제목, 예상 포모도로 수, 우선순위, 완료 상태 | 업무 관리 기능의 핵심. 브라우저를 닫아도 업무 목록 유지 |
+| **완료된 포모도로 수** | 오늘/주간 완료한 포모도로 통계 | 생산성 추적 및 통계 리포트 제공 |
+| **테마 설정** | 라이트/다크/토마토 테마 선택 | 사용자 UI 선호도 유지 |
+| **언어 설정** | 한국어/영어 선택 | 다국어 지원을 위한 언어 선호도 저장 |
+| **위젯 위치** | 화면에서 위젯의 X, Y 좌표 | 사용자가 배치한 위젯 위치를 기억하여 편의성 제공 |
+| **알림 설정** | 알림 활성화 여부, 자동 시작 옵션 | 사용자 알림 선호도 유지 |
+
+### Storage 권한 없이는 불가능한 이유
+
+1. **세션 간 데이터 유지**: Storage 권한 없이는 브라우저를 닫으면 모든 설정과 업무 목록이 사라집니다.
+2. **탭 간 데이터 동기화**: 여러 탭에서 동일한 타이머 상태를 유지하려면 storage가 필요합니다.
+3. **사용자 경험**: 매번 처음부터 설정을 입력해야 한다면 앱의 실용성이 크게 저하됩니다.
+
+### 데이터 보안
+
+- ✅ 모든 데이터는 **사용자의 로컬 기기에만** 저장됩니다
+- ✅ **외부 서버로 전송되지 않습니다**
+- ✅ **제3자와 공유되지 않습니다**
+- ✅ 확장 프로그램 삭제 시 **모든 데이터가 완전히 삭제**됩니다
+- ✅ 다른 확장 프로그램이나 웹사이트에서 **접근할 수 없습니다**
+
+### 대안 검토
+
+| 대안 | 불가능한 이유 |
+|------|---------------|
+| localStorage | Content Script에서 웹페이지의 localStorage를 사용하면 사이트별로 데이터가 분리되어 일관된 경험 제공 불가 |
+| 쿠키 | 용량 제한(4KB), 보안 문제, 사이트별 분리 문제 |
+| 서버 저장 | 불필요한 개인정보 수집이 되며, 네트워크 의존성 발생 |
+
+**결론**: `chrome.storage.local`은 사용자 개인정보를 외부로 전송하지 않으면서 핵심 기능을 제공하기 위한 **가장 안전하고 적절한 방법**입니다.
+
+---
+
 ## 8. 아동 개인정보 보호
 
 본 확장 프로그램은 13세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다.
@@ -190,6 +234,50 @@ Users can at any time:
 | `storage` | Store timer settings, task list, and statistics locally |
 | `notifications` | Display notifications when timer completes |
 | `alarms` | Manage timer in background |
+
+---
+
+## 7.1 Justification for Storage Permission
+
+### Why is the Storage Permission Required?
+
+This extension uses the `chrome.storage.local` API to provide Pomodoro timer functionality. This permission is **essential** for the following core features:
+
+### Detailed List of Stored Data
+
+| Data | Purpose | Necessity |
+|------|---------|-----------|
+| **Timer Settings** | Focus time (default 25min), short break (5min), long break (20min), interval settings | Users don't need to re-enter settings each time |
+| **Task List** | Task titles, estimated pomodoros, priority, completion status | Core task management feature. Persists across browser sessions |
+| **Completed Pomodoros** | Daily/weekly pomodoro statistics | Productivity tracking and reports |
+| **Theme Settings** | Light/Dark/Tomato theme selection | Maintain user UI preferences |
+| **Language Settings** | Korean/English selection | Store language preference for multilingual support |
+| **Widget Position** | X, Y coordinates of widget on screen | Remember user's preferred widget placement |
+| **Notification Settings** | Notification enabled, auto-start options | Maintain user notification preferences |
+
+### Why It's Impossible Without Storage Permission
+
+1. **Cross-session Data Persistence**: Without storage, all settings and tasks are lost when the browser closes.
+2. **Cross-tab Data Sync**: Storage is needed to maintain consistent timer state across multiple tabs.
+3. **User Experience**: Having to re-enter settings each time would severely impact app usability.
+
+### Data Security
+
+- ✅ All data is stored **only on the user's local device**
+- ✅ **Never transmitted** to external servers
+- ✅ **Never shared** with third parties
+- ✅ **Completely deleted** when the extension is uninstalled
+- ✅ **Cannot be accessed** by other extensions or websites
+
+### Alternatives Considered
+
+| Alternative | Why Not Viable |
+|-------------|----------------|
+| localStorage | In Content Scripts, using webpage localStorage would separate data per site, preventing consistent experience |
+| Cookies | Size limits (4KB), security concerns, per-site isolation |
+| Server Storage | Would require unnecessary personal data collection and network dependency |
+
+**Conclusion**: `chrome.storage.local` is the **safest and most appropriate method** to provide core functionality without transmitting user data externally.
 
 ---
 
