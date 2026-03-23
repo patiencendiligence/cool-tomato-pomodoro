@@ -336,63 +336,68 @@ export const Timer: React.FC<TimerProps> = ({
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        {/* Paused/Stopped State - Only Tomato */}
+        {/* Paused/Stopped State - Compact Tomato with Play */}
         {!isRunning ? (
           <div style={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center',
+            gap: '16px',
           }}>
-            {/* Bouncing Tomato */}
-            <div 
-              style={{
-                animation: 'bounce 1s ease-in-out infinite',
-                cursor: 'pointer',
-              }}
-              onClick={isFullTime ? onStart : onResume}
-            >
-              <img 
-                src="/tomato-mascot.png" 
-                alt="Cool Tomato"
+            {/* Tomato with Play Button overlay */}
+            <div style={{ position: 'relative' }}>
+              {/* Bouncing Tomato */}
+              <div 
                 style={{
-                  width: '160px',
-                  height: '160px',
-                  objectFit: 'contain',
-                  filter: 'drop-shadow(0 16px 32px rgba(231, 76, 60, 0.25))',
+                  animation: 'bounce 1s ease-in-out infinite',
+                  cursor: 'pointer',
                 }}
-              />
+                onClick={isFullTime ? onStart : onResume}
+              >
+                <img 
+                  src="/tomato-mascot.png" 
+                  alt="Cool Tomato"
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                    objectFit: 'contain',
+                    filter: 'drop-shadow(0 8px 16px rgba(231, 76, 60, 0.2))',
+                  }}
+                />
+              </div>
+
+              {/* Small Play Button - Bottom Right */}
+              <button
+                onClick={isFullTime ? onStart : onResume}
+                style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  right: '-4px',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '18px',
+                  fontSize: '14px',
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
+                  color: '#fff',
+                  border: '2px solid #fff',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                ▶
+              </button>
             </div>
 
-            {/* Play Button */}
-            <button
-              onClick={isFullTime ? onStart : onResume}
-              style={{
-                marginTop: '32px',
-                width: '64px',
-                height: '64px',
-                borderRadius: '32px',
-                fontSize: '24px',
-                background: 'linear-gradient(135deg, #1a1a1a 0%, #333 100%)',
-                color: '#fff',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              ▶
-            </button>
-
-            {/* Mode Pills - Always visible when paused */}
+            {/* Mode Pills - Vertical */}
             <div style={{
               display: 'flex',
+              flexDirection: 'column',
               gap: '6px',
               padding: '6px',
-              marginTop: '24px',
-              borderRadius: '28px',
+              borderRadius: '24px',
               background: 'rgba(255,255,255,0.7)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255,255,255,0.8)',
@@ -403,16 +408,16 @@ export const Timer: React.FC<TimerProps> = ({
                   key={m}
                   onClick={() => onModeChange(m)}
                   style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '36px',
+                    height: '36px',
                     border: 'none',
-                    borderRadius: '20px',
+                    borderRadius: '18px',
                     background: mode === m 
                       ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
                       : 'transparent',
                     boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
                     cursor: 'pointer',
-                    fontSize: '16px',
+                    fontSize: '14px',
                     transition: 'all 0.2s',
                     display: 'flex',
                     alignItems: 'center',
