@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import type { TimerMode } from '../types';
 import type { Translations } from '../hooks/useLanguage';
 
-type Tab = 'timer' | 'tasks' | 'stats' | 'settings';
-
 interface TimerProps {
   mode: TimerMode;
   timeLeft: number;
@@ -18,8 +16,6 @@ interface TimerProps {
   onModeChange: (mode: TimerMode) => void;
   colors: Record<string, string>;
   t: Translations;
-  activeTab: Tab;
-  onTabChange: (tab: Tab) => void;
 }
 
 export const Timer: React.FC<TimerProps> = ({
@@ -35,8 +31,6 @@ export const Timer: React.FC<TimerProps> = ({
   onSkip,
   onModeChange,
   t,
-  activeTab,
-  onTabChange,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -315,17 +309,8 @@ export const Timer: React.FC<TimerProps> = ({
     );
   }
 
-  // Navigation tabs for compact view
-  const navTabs: { id: Tab; icon: string }[] = [
-    { id: 'timer', icon: '⏱️' },
-    { id: 'tasks', icon: '✅' },
-    { id: 'stats', icon: '📊' },
-    { id: 'settings', icon: '⚙️' },
-  ];
-
-  // Timer card height for icon sizing
+  // Timer card height
   const TIMER_CARD_HEIGHT = 100;
-  const NAV_ICON_SIZE = Math.floor(TIMER_CARD_HEIGHT / 4);
 
   // Compact view - True Liquid Glass Style
   return (
@@ -334,22 +319,11 @@ export const Timer: React.FC<TimerProps> = ({
         display: 'flex', 
         flexDirection: 'row',
         alignItems: 'center', 
-        justifyContent: 'center',
-        padding: '16px',
-        position: 'relative',
-        background: 'linear-gradient(180deg, #f8f8fc 0%, #f0f0f5 100%)',
-        gap: '12px',
+        gap: '8px',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Main Content Area */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: '8px',
-      }}>
         {/* Paused/Stopped State - Compact Tomato with Play */}
         {!isRunning ? (
           <>
@@ -601,67 +575,29 @@ export const Timer: React.FC<TimerProps> = ({
             </div>
           </>
         )}
-      </div>
 
-      {/* Vertical Navigation - Right Side (1/4 of timer card height each) */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '2px',
-        height: `${TIMER_CARD_HEIGHT}px`,
-        justifyContent: 'space-between',
-      }}>
-        {navTabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            style={{
-              width: `${NAV_ICON_SIZE}px`,
-              height: `${NAV_ICON_SIZE}px`,
-              borderRadius: '8px',
-              border: 'none',
-              background: activeTab === tab.id 
-                ? 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)'
-                : 'rgba(255,255,255,0.4)',
-              backdropFilter: 'blur(20px)',
-              boxShadow: activeTab === tab.id 
-                ? '0 2px 8px rgba(0,0,0,0.1)' 
-                : 'none',
-              cursor: 'pointer',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            {tab.icon}
-          </button>
-        ))}
-      </div>
-
-      {/* Expand Button */}
-      <button
-        onClick={() => setIsExpanded(true)}
-        style={{
-          width: `${NAV_ICON_SIZE}px`,
-          height: `${NAV_ICON_SIZE}px`,
-          borderRadius: '8px',
-          background: 'rgba(255,255,255,0.6)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.8)',
-          color: '#666',
-          cursor: 'pointer',
-          fontSize: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginLeft: '4px',
-        }}
-        title="Expand"
-      >
-        ⤢
-      </button>
+        {/* Expand Button */}
+        <button
+          onClick={() => setIsExpanded(true)}
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '8px',
+            background: 'rgba(255,255,255,0.6)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.8)',
+            color: '#666',
+            cursor: 'pointer',
+            fontSize: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: '4px',
+          }}
+          title="Expand"
+        >
+          ⤢
+        </button>
     </div>
   );
 };
