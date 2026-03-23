@@ -139,6 +139,38 @@
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
 }
 
+.pomodoro-container.theme-dark .task-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.pomodoro-container.theme-dark .task-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pomodoro-container.theme-dark .pomo-input,
+.pomodoro-container.theme-dark .priority-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.pomodoro-container.theme-dark .add-task-form {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pomodoro-container.theme-dark .btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ccc;
+}
+
+.pomodoro-container.theme-dark .btn-save {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+}
+
 /* Theme: Tomato - Liquid Glass */
 .pomodoro-container.theme-tomato {
   background: linear-gradient(135deg, rgba(231, 76, 60, 0.65) 0%, rgba(255, 120, 100, 0.35) 50%, rgba(192, 57, 43, 0.7) 100%);
@@ -260,6 +292,38 @@
 
 .pomodoro-container.theme-tomato .toggle-btn.on .toggle-knob {
   background: #27ae60;
+}
+
+.pomodoro-container.theme-tomato .task-input {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #c0392b;
+}
+
+.pomodoro-container.theme-tomato .task-input::placeholder {
+  color: rgba(192, 57, 43, 0.6);
+}
+
+.pomodoro-container.theme-tomato .pomo-input,
+.pomodoro-container.theme-tomato .priority-select {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #c0392b;
+}
+
+.pomodoro-container.theme-tomato .add-task-form {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.pomodoro-container.theme-tomato .btn-cancel {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.pomodoro-container.theme-tomato .btn-save {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  color: #c0392b;
 }
 
 .pomodoro-main {
@@ -873,6 +937,11 @@
   font-size: 12px;
   margin-bottom: 8px;
   background: #fff;
+  color: #1a1a1a;
+}
+
+.task-input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .form-row {
@@ -899,6 +968,11 @@
   border-radius: 6px;
   font-size: 11px;
   background: #fff;
+  color: #1a1a1a;
+}
+
+.pomo-input {
+  color: #1a1a1a;
 }
 
 .form-actions {
